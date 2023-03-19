@@ -1,0 +1,68 @@
+.Image-Stack{
+    position: relative;
+    top: 37vmin;
+    left: 44vmin;
+  }
+
+.Intro-Text{
+    position: absolute;
+    display: inline;
+    overflow: hidden;
+    white-space: nowrap;
+    color: white;
+    top: -24vmin;
+    left: 28.5vmin;
+    font-size: calc(26px + 2vmin);
+    text-align: left;
+    line-height: 9vmin;
+    font-family: monospace;
+}
+
+.Secondary-Text{
+    position: absolute;
+    display: inline;
+    overflow: hidden;
+    white-space: nowrap;
+    color: white;
+    top: 3.5vmin;
+    left: 63.7vmin;
+    font-size: calc(10px + 2vmin);
+    text-align: left;
+    line-height: 6vmin;
+    font-family: monospace;
+}
+
+.Self-Image {
+    position: absolute;
+    height: 48vmin;
+    top: 1vmin;
+    left: 1vmin;
+}
+
+.Terminal-Image {
+    position: absolute;
+    height: 80vmin;
+    top: -30vmin;
+    left: 23vmin;
+}
+
+.Circle {
+    position: absolute;
+    height: 50vmin;
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .Circle {
+        animation: Circle-spin infinite 5s linear;
+    }
+}
+
+@keyframes Circle-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
