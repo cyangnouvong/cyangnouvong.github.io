@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+.introduction {
+  font-size: 5rem;
+  font-family: 'Inter', sans-serif;
+  color: white;
+}
+
+.subIntroduction {
+  font-size: 2.5rem;
+  font-family: 'Inter', sans-serif;
+  color: white;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+ }
+
+.gradient {
+  background: -webkit-linear-gradient(250deg, #D0F978, #7ABF9A);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.reactIcons {
+  color: white;
+}

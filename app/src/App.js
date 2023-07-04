@@ -1,23 +1,27 @@
-import "./components/styles/App.css";
-import { Routes, Route, HashRouter } from "react-router-dom";
+import './App.css';
+import BgParticle from './components/BgParticles'
+import Home from './pages/Home'
+import About from './pages/About'
+import Resume from './pages/Resume'
+import Contact from './pages/Contact'
+import { Route, Routes, HashRouter } from "react-router-dom";
 import { useEffect } from "react";
-import Home from "./pages/home";
-
-//const About = lazy(() => import('./pages/About'));
 
 function App() {
-  return (
-    <div className="App">
-      <HashRouter>
-        <Routes>
-            <Route path="/" element={<Home />} />
-          </Routes>
-      </HashRouter>
-    </div>
+  return( 
+    <HashRouter>
+      <BgParticle />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/resume" element={<Resume />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </HashRouter>
   );
 }
 
-export const changeTitle = (title) => {
+export const ChangeTitle = (title) => {
   useEffect(() => {
     document.title = title;
   }, []);
