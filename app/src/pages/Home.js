@@ -61,18 +61,4 @@ const Home = () => {
     );
 }
 
-/*
-            <Box
-                style={{
-                borderRadius: '1rem',
-                background: 'rgba(0, 0, 0, 0.2)',
-                boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.2)',
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
-                padding: '1rem 2rem',
-                transition: 'all 0.3s ease',
-                }}
-            ></Box>
-            */
-
 export default Home;
