@@ -31,14 +31,17 @@ const Navigation = () => {
                 right:'3em',
             }}
         >
+        </Box>
+    );
+}
+
+/*
             <ThemeProvider theme={theme}>
                 <Button variant='text' sx={style} component={Link} to='/'>Home</Button>
                 <Button variant='text' sx={style} component={Link} to='/about'>About</Button>
                 <Button variant='text' sx={style} component={Link} to='/Resume'>Resume</Button>
                 <Button variant='text' sx={style} component={Link} to='/Contact'>Contact</Button>
             </ThemeProvider>
-        </Box>
-    );
-}
+*/
 
 export default Navigation;

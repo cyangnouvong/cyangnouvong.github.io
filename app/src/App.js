@@ -9,15 +9,10 @@ import { useEffect } from "react";
 
 function App() {
   return( 
-    <HashRouter>
+    <div>
       <BgParticle />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/resume" element={<Resume />} />
-        <Route path="/contact" element={<Contact />} />
-      </Routes>
-    </HashRouter>
+      <Home />
+    </div>
   );
 }
 
@@ -28,3 +23,15 @@ export const ChangeTitle = (title) => {
 }
 
 export default App;
+
+/*
+    <HashRouter>
+      <BgParticle />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/resume" element={<Resume />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </HashRouter>
+*/
