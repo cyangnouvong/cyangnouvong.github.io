@@ -43,7 +43,6 @@ const Navigation = () => {
                 <Button variant='text' sx={style} component={Link} to='/'>Home</Button>
                 <Button variant='text' sx={style} component={Link} to='/about'>About</Button>
                 <Button variant='text' sx={style} component={Link} to='/resume'>Resume</Button>
-                <Button variant='text' sx={style} component={Link} to='/contact'>Contact</Button>
             </ThemeProvider>
         </Box>
     );
