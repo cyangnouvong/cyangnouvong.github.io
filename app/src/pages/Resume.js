@@ -7,24 +7,19 @@ import { Box } from '@mui/material';
 const Resume = () => {
     ChangeTitle('Resume');
     return (
-        <div>
+        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '100vh'}}>
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
             <Navigation />
             <Box
                 sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '80vh',
-                    marginLeft: '10rem',
-                    marginRight: '10rem',
-                    marginTop: '7rem',
-                    gap: '5rem',
+                    width: '80vw',
+                    height: '70vh',
                 }}
             >
                 <iframe src={resume} width='100%' height='100%'></iframe>
             </Box>
             <Socials />
+        </div>
         </div>
     );
 }

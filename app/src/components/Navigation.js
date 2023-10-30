@@ -35,8 +35,8 @@ const Navigation = () => {
             <Box
                 component={'img'}
                 src={C}
-                width={{ xs: '5vh', md: '8vh' }}
-                height={{ xs: '5vh', md: '8vh' }}
+                width={{ xs: '5vh', md: '7vh' }}
+                height={{ xs: '5vh', md: '7vh' }}
                 borderRadius={'50%'}
             />
             <ThemeProvider theme={theme}>
