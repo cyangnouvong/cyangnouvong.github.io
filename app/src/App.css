@@ -1,15 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 
-@media (min-width: 0px) {
-  p { font-size: 10px; };
-}
-
-@media (min-width: 1000px) {
-  p { font-size: 5px; };
-}
-
-
-
 .about {
   font-size: 1.7rem;
   font-family: 'Inter', sans-serif;
@@ -18,12 +8,14 @@
 
 .introduction {
   font-size: 5rem;
+  font-weight: bold;
   font-family: 'Inter', sans-serif;
   color: white;
 }
 
 .subIntroduction {
-  font-size: 3rem;
+  font-size: 2.5rem;
+  font-weight: bold;
   font-family: 'Inter', sans-serif;
   color: white;
 }

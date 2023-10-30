@@ -21,7 +21,6 @@ const Home = () => {
                     marginLeft: '5rem',
                     marginRight: '5rem',
                     marginTop: '10rem',
-                    borderBlockStyle: 'solid',
                 }}
             >
                 <Box
@@ -32,8 +31,6 @@ const Home = () => {
                         alignItems: 'center',
                         alignSelf: 'flex-start',
                         flexFlow: 'row wrap',
-                        borderBlockStyle: 'solid',
-                        borderColor: 'red',
 
                 }}>
                     <Typewriter
@@ -47,17 +44,17 @@ const Home = () => {
                             cursorClassName: 'introduction',
                         }}
                     />
-                    <p className='introduction'>
+                    <h1 className='introduction'>
                         , I'm {' '}
                             <span className='gradient'>Chelsea</span>
                         {' '} -
-                    </p>
+                    </h1>
                 </Box>
-                <p className='subIntroduction'>
+                <h1 className='subIntroduction'>
                     a {' '}
                         <span className='gradient'>software developer</span>
                     {' '} based in <br /> Atlanta, GA.
-                </p>
+                </h1>
             </Box>
             <Socials />
         </div>
