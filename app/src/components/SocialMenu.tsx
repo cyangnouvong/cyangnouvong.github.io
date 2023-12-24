@@ -37,7 +37,7 @@ const SocialMenu = () => {
         }}
       >
         <MenuItem href="https://www.linkedin.com/in/cyangnouvong/" target="_blank" component="a" onClick={handleClose}>LinkedIn</MenuItem>
-        <MenuItem href="hhttps://www.instagram.com/cdaoyang/" target="_blank" component="a" onClick={handleClose}>Instagram</MenuItem>
+        <MenuItem href="https://www.instagram.com/cdaoyang/" target="_blank" component="a" onClick={handleClose}>Instagram</MenuItem>
         <MenuItem href="https://github.com/cyangnouvong/" target="_blank" component="a" onClick={handleClose}>GitHub</MenuItem>
       </Menu>
     </div>
