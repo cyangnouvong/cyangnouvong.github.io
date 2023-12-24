@@ -50,7 +50,7 @@ const Home = () => {
                 <h1 className='subIntroduction'>
                     a {' '}
                         <span className='gradient'>software developer</span>
-                    {' '} based in <br /> Atlanta, GA.
+                    {' '} based in <br /> Dallas, TX.
                 </h1>
             </Box>
             <Socials />
