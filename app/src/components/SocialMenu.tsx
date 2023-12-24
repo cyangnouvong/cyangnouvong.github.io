@@ -23,9 +23,9 @@ const SocialMenu = () => {
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
-        style={{ fontSize: '1rem', color: 'white', fontFamily: "'Inter', sans-serif"}}
+        style={{ color: 'white' }}
       >
-        <AiOutlineMenu size={'1.5rem'} />
+        <AiOutlineMenu size={'2em'} />
       </Button>
       <Menu
         id="basic-menu"
