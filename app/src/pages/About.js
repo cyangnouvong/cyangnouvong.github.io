@@ -8,7 +8,7 @@ import '../App.css'
 const About = () => {
     ChangeTitle('About')
     return (
-        <div>
+        <div style={{ height: '100%' }}>
             <Navigation />
             <Box
                 className='aboutPage'
@@ -25,8 +25,8 @@ const About = () => {
                 <Box
                     component={'img'}
                     src={self}
-                    width={{ xs: '10rem', sm: '15rem', md: '25rem' }}
-                    height={{ xs: '10rem', sm: '15rem', md: '25rem' }}
+                    width={{ xs: '13rem', sm: '17rem', md: '25rem' }}
+                    height={{ xs: '13rem', sm: '17rem', md: '25rem' }}
                     borderRadius={'50%'}
                 />
                 <Box

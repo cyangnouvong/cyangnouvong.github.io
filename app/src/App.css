@@ -18,6 +18,12 @@
   color: white;
 }
 
+.socialMenu {
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  color: white;
+}
+
 body {
   font-family: 'Inter', sans-serif;
  }
