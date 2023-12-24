@@ -11,21 +11,22 @@ const About = () => {
         <div>
             <Navigation />
             <Box
+                className='aboutPage'
                 sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
+                    justifyContent: 'center',
                     alignItems: 'center',
+                    alignContent: 'center',
                     height: '100vh',
-                    marginLeft: '10rem',
-                    marginRight: '10rem',
-                    gap: '5rem',
+                    marginLeft: '10vw',
+                    marginRight: '10vw',
+                    gap: '5vw',
                 }}
             >
                 <Box
                     component={'img'}
                     src={self}
-                    width={{ xs: '5vh', md: '55vh' }}
-                    height={{ xs: '5vh', md: '55vh' }}
+                    width={{ xs: '10rem', sm: '15rem', md: '25rem' }}
+                    height={{ xs: '10rem', sm: '15rem', md: '25rem' }}
                     borderRadius={'50%'}
                 />
                 <Box
@@ -34,7 +35,7 @@ const About = () => {
                         background: 'rgba(0, 0, 0, 0.22)',
                         boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.5)',
                         WebkitBackdropFilter: 'blur(6px)',
-                        padding: '0rem 3rem',
+                        padding: '0vw 2vw',
                     }}
                 >
                     <p className='about'>

@@ -8,8 +8,8 @@ const Resume = () => {
     ChangeTitle('Resume');
     return (
         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '100vh'}}>
-            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
             <Navigation />
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
             <Box
                 sx={{
                     width: '80vw',

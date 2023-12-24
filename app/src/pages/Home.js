@@ -5,8 +5,8 @@ import Navigation from '../components/Navigation';
 import Socials from '../components/Socials';
 import '../App.css'
 
-const greetings = ['Hello', 'Hola', 'Hallo', 'Bonjour', 'مرحبا', 'こんにちは',
-    'ສະບາຍດີ', '안녕하세요', '你好', '哈囉', 'Здравствуйте', 'Salam', 'Xin chào'];
+const greetings = ['Hello', 'Hola', 'Bonjour', 'مرحبا', 'こんにちは',
+    'ສະບາຍດີ', '안녕하세요', '你好', 'Здравствуйте', 'Salam', 'Xin chào'];
 
 const Home = () => {
     ChangeTitle("Chelsea Yangnouvong [WIP]");
@@ -20,18 +20,15 @@ const Home = () => {
                     minHeight: '50vh',
                     marginLeft: '5rem',
                     marginRight: '5rem',
-                    marginTop: '10rem',
+                    marginTop: '8rem',
                 }}
             >
                 <Box
                     sx={{
                         display: 'flex',
                         flexDirection: 'row',
-                        justifyContent: 'center',
                         alignItems: 'center',
-                        alignSelf: 'flex-start',
                         flexFlow: 'row wrap',
-
                 }}>
                     <Typewriter
                         options={{

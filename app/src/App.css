@@ -1,21 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 
 .about {
-  font-size: 1.7rem;
+  font-size: 1.9vw;
   font-family: 'Inter', sans-serif;
   color: white;
 }
 
 .introduction {
-  font-size: 5rem;
-  font-weight: bold;
+  font-size: 5vw;
   font-family: 'Inter', sans-serif;
   color: white;
 }
 
 .subIntroduction {
-  font-size: 2.5rem;
-  font-weight: bold;
+  font-size: 3vw;
   font-family: 'Inter', sans-serif;
   color: white;
 }
@@ -32,4 +30,40 @@ body {
 
 .reactIcons {
   color: white;
+}
+
+.aboutPage {
+  display: flex;
+  flex-direction: row;
+  min-width: 100px;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  margin-right: 4vw;
+}
+
+@media only screen and (max-width: 1000px) {
+  .aboutPage {
+    flex-wrap: wrap;
+  }
+
+  .about {
+    font-size: 1rem;
+  }
+
+  .introduction {
+    font-size: 3rem;
+  }
+
+  .subIntroduction {
+    font-size: 2rem;
+  }
+
+  .navigation {
+    justify-content: center;
+    margin-right: 0px;
+  }
 }
