@@ -1,0 +1,47 @@
+@import '../../constants.scss';
+
+.home-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5rem;
+    margin-left: 3rem;
+    margin-right: 3rem;
+    gap: 4vw;
+}
+
+@media screen and (max-width: $breakpoint-lower) {
+    .home-container {
+        align-items: center;
+        text-align: center;
+    }
+    .desktop {
+        display: none;
+    }
+}
+
+@media screen and (min-width: $breakpoint-higher) {
+    .mobile {
+        display: none;
+    }
+}
+
+.header-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.introduction {
+    font-size: 6vw;
+    color: white;
+}
+
+.subintroduction {
+    font-size: 4vw;
+    color: white;
+}
+
+.gradient {
+    background: -webkit-linear-gradient(250deg, #D0F978, #7ABF9A);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

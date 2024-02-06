@@ -1,0 +1,43 @@
+@import '../../constants.scss';
+
+@media screen and (min-width: $breakpoint-higher) {
+    .nav-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 6%;
+        padding-right: 3rem;
+        margin-top: 2rem;
+    }
+    .mobile {
+        display: none;
+    }
+}
+
+@media screen and (max-width: $breakpoint-lower) {
+    .desktop {
+        display: none !important;
+    }
+
+    .nav-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-top: 2rem;
+    }
+
+    .burger {
+        width: 50%;
+    }
+    .logo {
+        display: flex;
+        width: 50%;
+        justify-content: flex-end;
+        margin-right: 1rem;
+    }
+}
+
+.text {
+    color: black;
+}
