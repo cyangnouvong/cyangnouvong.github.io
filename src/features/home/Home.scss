@@ -17,9 +17,26 @@
     .desktop {
         display: none;
     }
+    .introduction {
+        font-size: 8vw;
+        color: white;
+    }
+    
+    .subintroduction {
+        font-size: 6vw;
+        color: white;
+    }
 }
 
 @media screen and (min-width: $breakpoint-higher) {
+    .introduction {
+        font-size: 6vw;
+        color: white;
+    }
+    .subintroduction {
+        font-size: 4vw;
+        color: white;
+    }
     .mobile {
         display: none;
     }
@@ -28,16 +45,6 @@
 .header-container {
     display: flex;
     flex-direction: row;
-}
-
-.introduction {
-    font-size: 6vw;
-    color: white;
-}
-
-.subintroduction {
-    font-size: 4vw;
-    color: white;
 }
 
 .gradient {
