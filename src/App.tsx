@@ -12,13 +12,63 @@ import Title from "./prompts/Title";
 import Question from "./prompts/Question";
 import "./App.scss";
 import { createTheme, ThemeProvider } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import { text } from "stream/consumers";
 
 const App = () => {
-    const [prompt, setPrompt] = useState(0);
+    const [prompt, setPrompt] = useState(-1);
+    const [password, setPassword] = useState("");
+    const [passwordMet, setPasswordMet] = useState(false);
     const firstPageNumber = 0;
     const lastPageNumber = 7;
+    const login = "omakase";
+
+    const style = {
+        "& .MuiOutlinedInput-root": {
+            color: "#ebe2df",
+            "& fieldset": {
+                borderColor: "#ebe2df",
+                text: "#ebe2df",
+            },
+            "&:hover fieldset": {
+                borderColor: "#ebe2df",
+                text: "#ebe2df",
+            },
+            "&.Mui-focused fieldset": {
+                borderColor: "#ebe2df",
+                text: "#ebe2df",
+            },
+        },
+        "& .MuiInputLabel-outlined": {
+            color: "#ebe2df",
+        },
+    };
+
+    const PasswordField = () => {
+        return (
+            <TextField
+                required
+                id="outlined-required"
+                label="Password"
+                autoFocus
+                onChange={(e) => {
+                    setPassword(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                    if (e.keyCode === 13) {
+                        if (password === login) {
+                            setPasswordMet(true);
+                            setPrompt(prompt + 1);
+                        }
+                    }
+                }}
+                sx={style}
+            />
+        );
+    };
 
     const map = new Map([
+        [-1, PasswordField()],
         [0, <Title />],
         [1, <PromptOne />],
         [2, <PromptTwo />],
@@ -44,7 +94,7 @@ const App = () => {
     return (
         <ThemeProvider theme={theme}>
             <div className="container">
-                {prompt > firstPageNumber && (
+                {prompt > firstPageNumber && passwordMet && (
                     <Button
                         onClick={() => setPrompt(prompt - 1)}
                         style={{ minWidth: "50px", marginLeft: "10px" }}
@@ -53,7 +103,7 @@ const App = () => {
                     </Button>
                 )}
                 {map.get(prompt)}
-                {prompt < lastPageNumber && (
+                {prompt < lastPageNumber && passwordMet && (
                     <Button
                         onClick={() => setPrompt(prompt + 1)}
                         style={{ minWidth: "50px", marginRight: "10px" }}
