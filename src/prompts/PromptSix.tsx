@@ -11,8 +11,10 @@ const PromptSix = () => {
                 className="rotate"
                 style={{
                     position: "absolute",
-                    right: window.innerWidth / 2 - 300,
-                    bottom: window.innerHeight / 2 - 250,
+                    right: "50%",
+                    bottom: "50%",
+                    marginRight: "-300px",
+                    marginBottom: "-250px",
                 }}
             />
         </section>
