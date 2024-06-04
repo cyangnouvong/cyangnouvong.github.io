@@ -50,7 +50,15 @@ const Question = () => {
                         src={require("../assets/yes.gif")}
                         alt="yes"
                         id="yes"
-                        style={{ position: "absolute" }}
+                        style={{
+                            position: "absolute",
+                            left: "50%",
+                            top: "50%",
+                            width: "500px",
+                            height: "500px",
+                            marginTop: "-250px",
+                            marginLeft: "-250px",
+                        }}
                         onClick={() => setCondition("")}
                     />
                 )}
@@ -58,7 +66,15 @@ const Question = () => {
                     <img
                         src={require("../assets/no.gif")}
                         alt="no"
-                        style={{ position: "absolute" }}
+                        style={{
+                            position: "absolute",
+                            left: "50%",
+                            top: "50%",
+                            width: "500px",
+                            height: "400px",
+                            marginTop: "-200px",
+                            marginLeft: "-250px",
+                        }}
                         onClick={() => setCondition("")}
                     />
                 )}
