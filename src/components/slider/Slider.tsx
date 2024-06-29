@@ -3,6 +3,11 @@ import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "react-use-gesture";
 import styles from "./Slider.module.scss";
 
+interface SliderProps {
+    title: string;
+    subTitle?: string;
+}
+
 const left = {
     bg: `linear-gradient(120deg, #bad5ea 0%, #356d94 100%)`,
     justifySelf: "end",
@@ -15,7 +20,7 @@ const right = {
     info: "I'm Chelsea",
 };
 
-const Slider = () => {
+const Slider = (props: SliderProps) => {
     const [text, setText] = useState("");
 
     const [{ x, scale, bg, info }, api] = useSpring(() => ({
@@ -31,7 +36,11 @@ const Slider = () => {
             ...(x < 0 ? left : right),
             immediate: (name) => active && name === "x",
         });
-        setText(x < 0 ? left.info : right.info);
+        if (props.title !== "404") {
+            setText(x < 0 ? left.info : right.info);
+        } else {
+            setText(x < 0 ? ":(" : "This page does not exist");
+        }
     });
 
     return (
@@ -43,8 +52,8 @@ const Slider = () => {
             <div className={styles.text}>{text}</div>
             <animated.div className={styles.fg} style={{ x, scale }}>
                 <div>
-                    Hello.
-                    <div style={{ fontSize: "0.7rem" }}>slide me!</div>
+                    {props.title}
+                    <div style={{ fontSize: "0.7rem" }}>{props.subTitle}</div>
                 </div>
             </animated.div>
         </animated.div>
