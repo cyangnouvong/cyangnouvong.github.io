@@ -17,13 +17,13 @@ const left = {
 const right = {
     bg: `linear-gradient(120deg, #ac7a41 0%, #ffdcb3 100%)`,
     justifySelf: "start",
-    info: "I'm Chelsea",
+    info: "I'm Dao",
 };
 
 const Slider = (props: SliderProps) => {
     const [text, setText] = useState("");
 
-    const [{ x, scale, bg, info }, api] = useSpring(() => ({
+    const [{ x, scale, bg }, api] = useSpring(() => ({
         x: 0,
         scale: 1,
         ...left,
@@ -36,11 +36,8 @@ const Slider = (props: SliderProps) => {
             ...(x < 0 ? left : right),
             immediate: (name) => active && name === "x",
         });
-        if (props.title !== "404") {
-            setText(x < 0 ? left.info : right.info);
-        } else {
-            setText(x < 0 ? ":(" : "This page does not exist");
-        }
+
+        setText(x < 0 ? left.info : right.info);
     });
 
     return (
