@@ -43,17 +43,11 @@ function buildGeometry(
   return geo;
 }
 
-interface Props {
-  frustum: number;
-}
-
-const HeightMap = ({ frustum }: Props) => {
+const HeightMap = () => {
   const { mode } = useTheme();
   const { size } = useThree();
   const aspect = size.width / size.height;
 
-  const cellW = (WORLD_SIZE * aspect) / GRID_SIZE;
-  const cellH = WORLD_SIZE / GRID_SIZE;
   const halfX = (WORLD_SIZE * aspect) / 2;
   const halfY = WORLD_SIZE / 2;
 

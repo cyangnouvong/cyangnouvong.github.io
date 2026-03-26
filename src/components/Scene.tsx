@@ -25,7 +25,7 @@ const Scene = () => {
         gl={{ antialias: true }}
         style={{ background: themes[mode].bg }}
       >
-        <HeightMap key={mode} frustum={frustum} />
+        <HeightMap key={mode} />
       </Canvas>
     </div>
   );
