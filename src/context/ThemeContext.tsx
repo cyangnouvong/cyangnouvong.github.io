@@ -34,6 +34,11 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
 function getPreferredMode(): Mode {
+  const stored = localStorage.getItem("theme") as Mode | null;
+  if (stored) {
+    return stored;
+  }
+
   return window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "Dark"
     : "Light";
@@ -48,6 +53,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
+    if (localStorage.getItem("theme")) {
+      return;
+    }
+
     const media = window.matchMedia("(prefers-color-scheme: dark)");
 
     const listener = (e: MediaQueryListEvent) => {
@@ -63,6 +72,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleSetMode = (newMode: Mode) => {
     setMode(newMode);
+    localStorage.setItem("theme", newMode);
     applyTheme(newMode);
   };
 

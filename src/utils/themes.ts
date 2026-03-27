@@ -3,7 +3,7 @@ export const themes = {
     bg: "#e4e4df",
     contour: {
       major: {
-        color: normalizeArray([153, 151, 129]),
+        color: normalizeArray([140, 138, 115]),
         opacity: 0.78,
       },
       mid: {
