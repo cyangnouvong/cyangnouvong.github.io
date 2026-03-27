@@ -39,8 +39,8 @@ const NavMenu = () => {
     <div
       style={{
         position: "absolute",
-        top: "100px",
-        left: "16px",
+        top: "clamp(100px, 18vh, 200px)",
+        left: "clamp(16px, 2vw, 48px)",
       }}
     >
       <div

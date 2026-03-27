@@ -3,8 +3,8 @@ const IntroHeader = () => {
     <div
       style={{
         position: "absolute",
-        top: "12px",
-        left: "16px",
+        top: "clamp(12px, 1.5vh, 32px)",
+        left: "clamp(16px, 2vw, 48px)",
         pointerEvents: "none",
       }}
     >

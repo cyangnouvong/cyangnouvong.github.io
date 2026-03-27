@@ -6,6 +6,7 @@ import { generateHeightMap } from "../utils/noise";
 import { marchingSquares, type Segment } from "../utils/marchingSquares";
 import { useTheme } from "../context/ThemeContext";
 import { themes } from "../utils/themes";
+import { useWindowSize } from "../utils/useWindowSize";
 
 const CONTOUR_LEVELS = 30;
 const GRID_SIZE = 256;
@@ -46,6 +47,12 @@ function buildGeometry(
 const HeightMap = () => {
   const { mode } = useTheme();
   const { size } = useThree();
+
+  const { width } = useWindowSize();
+  const isMobile = width < 768;
+
+  const LEVELS = isMobile ? 8 : CONTOUR_LEVELS;
+  const GRID = isMobile ? 64 : GRID_SIZE;
   const aspect = size.width / size.height;
 
   const halfX = (WORLD_SIZE * aspect) / 2;
@@ -61,22 +68,22 @@ const HeightMap = () => {
   );
 
   function buildAllGeometries(asp: number) {
-    const cW = (WORLD_SIZE * asp) / GRID_SIZE;
-    const cH = WORLD_SIZE / GRID_SIZE;
+    const cW = (WORLD_SIZE * asp) / GRID;
+    const cH = WORLD_SIZE / GRID;
     const hX = (WORLD_SIZE * asp) / 2;
     const hY = WORLD_SIZE / 2;
 
     const map = generateHeightMap({
-      gridSize: GRID_SIZE,
-      scale: 3.5,
-      octaves: 6,
+      gridSize: GRID,
+      octaves: isMobile ? 3 : 6,
+      scale: isMobile ? 5 : 3.5,
       persistence: 0.5,
       lacunarity: 2.0,
     });
 
-    return Array.from({ length: CONTOUR_LEVELS }, (_, i) => {
-      const isoLevel = (i + 1) / (CONTOUR_LEVELS + 1);
-      const segments = marchingSquares(map, GRID_SIZE, isoLevel);
+    return Array.from({ length: LEVELS }, (_, i) => {
+      const isoLevel = (i + 1) / (LEVELS + 1);
+      const segments = marchingSquares(map, GRID, isoLevel);
       return segments.length > 0
         ? buildGeometry(segments, cW, cH, hX, hY)
         : null;

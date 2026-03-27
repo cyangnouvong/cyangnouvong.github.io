@@ -1,4 +1,5 @@
 import { useTheme } from "../context/ThemeContext";
+import { useWindowSize } from "../utils/useWindowSize";
 
 interface ButtonProps {
   label: string;
@@ -48,6 +49,8 @@ const Button = ({ label, active, onClick }: ButtonProps) => {
 
 const DisplayMode = () => {
   const { mode, setMode } = useTheme();
+  const { width } = useWindowSize();
+  const isMobile = width < 768;
 
   return (
     <div
@@ -55,10 +58,12 @@ const DisplayMode = () => {
         position: "fixed",
         bottom: "var(--margin-y)",
         left: "var(--margin-x)",
-        transform: "translateY(-50%) rotate(-90deg)",
+        transform: isMobile
+          ? "translateY(100%) translateX(5%)"
+          : "translateY(-50%) rotate(-90deg)",
         transformOrigin: "left bottom",
         display: "flex",
-        gap: "8px",
+        gap: isMobile ? "16px" : "8px",
       }}
     >
       {["Light", "Dark"].map((activeState) => (
