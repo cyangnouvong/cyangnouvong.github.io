@@ -4,7 +4,6 @@ import FlyingPlane from "../FlyingPlane/FlyingPlane";
 import About from "../Content/About";
 import Work from "../Content/Work";
 import Contact from "../Content/Contact";
-import { useTheme } from "../../context/ThemeContext";
 
 type DrawerProps = {
   menuItem: string;
