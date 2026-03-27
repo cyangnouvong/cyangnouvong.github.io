@@ -13,7 +13,7 @@ const App = () => {
           inset: 0,
           margin: "var(--margin-y) var(--margin-x)",
           border: "1px solid var(--ink-muted)",
-          overflow: "hidden", // clips the canvas to the border
+          overflow: "hidden",
         }}
       >
         {/* Animated background */}

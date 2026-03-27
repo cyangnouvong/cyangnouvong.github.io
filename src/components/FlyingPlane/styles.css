@@ -1,0 +1,16 @@
+.plane {
+  position: absolute;
+  width: var(--text-xl, 40px);
+  height: auto;
+  offset-distance: 0%;
+  offset-rotate: auto;
+}
+
+@keyframes flyAlongPath {
+  0% {
+    offset-distance: 0%;
+  }
+  100% {
+    offset-distance: 100%;
+  }
+}

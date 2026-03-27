@@ -9,6 +9,7 @@ const themes = {
     "--ink-mid": "#54533a",
     "--ink-muted": "#8a8a7c",
     "--ink-faint": "#aaaaa0",
+    "--drawer-bg": "rgba(197, 197, 190, 0.7)",
   },
   Dark: {
     "--bg": "#1a1a17",
@@ -16,6 +17,7 @@ const themes = {
     "--ink-mid": "#a8a899",
     "--ink-muted": "#6b6b5e",
     "--ink-faint": "#4a4a40",
+    "--drawer-bg": "rgba(20, 20, 17, 0.7)",
   },
 };
 
