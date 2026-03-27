@@ -23,7 +23,7 @@ function getLevelStyle(i: number, mode: "Light" | "Dark", isMobile: boolean) {
         ? t.contour.mid
         : t.contour.fine;
 
-  return isMobile ? { ...style, opacity: style.opacity * 0.4 } : style;
+  return isMobile ? { ...style, opacity: style.opacity * 0.3 } : style;
 }
 
 function buildGeometry(
