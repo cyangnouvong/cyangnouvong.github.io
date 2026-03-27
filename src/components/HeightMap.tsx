@@ -56,6 +56,9 @@ const HeightMap = () => {
   const { width } = useWindowSize();
   const isMobile = width < 768;
 
+  const LEVELS = isMobile ? 15 : CONTOUR_LEVELS;
+  const GRID = isMobile ? 128 : GRID_SIZE;
+
   const aspect = size.width / size.height;
 
   const halfX = (WORLD_SIZE * aspect) / 2;
@@ -71,22 +74,22 @@ const HeightMap = () => {
   );
 
   function buildAllGeometries(asp: number) {
-    const cW = (WORLD_SIZE * asp) / GRID_SIZE;
-    const cH = WORLD_SIZE / GRID_SIZE;
+    const cW = (WORLD_SIZE * asp) / GRID;
+    const cH = WORLD_SIZE / GRID;
     const hX = (WORLD_SIZE * asp) / 2;
     const hY = WORLD_SIZE / 2;
 
     const map = generateHeightMap({
-      gridSize: GRID_SIZE,
-      octaves: isMobile ? 6 : 6,
-      scale: isMobile ? 3.5 : 3.5,
+      gridSize: GRID, // ← was GRID_SIZE
+      octaves: isMobile ? 2 : 6,
+      scale: isMobile ? 8 : 3.5,
       persistence: 0.5,
       lacunarity: 2.0,
     });
 
-    return Array.from({ length: CONTOUR_LEVELS }, (_, i) => {
-      const isoLevel = (i + 1) / (CONTOUR_LEVELS + 1);
-      const segments = marchingSquares(map, GRID_SIZE, isoLevel);
+    return Array.from({ length: LEVELS }, (_, i) => {
+      const isoLevel = (i + 1) / (LEVELS + 1);
+      const segments = marchingSquares(map, GRID, isoLevel);
       return segments.length > 0
         ? buildGeometry(segments, cW, cH, hX, hY)
         : null;
