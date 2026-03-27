@@ -47,7 +47,7 @@ const NavMenu = () => {
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: "10px",
+          gap: "clamp(12px, 2vh, 24px)",
         }}
       >
         {["About", "Work", "Contact"].map((label) => (

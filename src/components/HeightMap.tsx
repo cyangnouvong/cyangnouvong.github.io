@@ -14,11 +14,16 @@ const WORLD_SIZE = 100;
 const SWEEP_SPEED = 40;
 const STRIPE_HALF = 90;
 
-function getLevelStyle(i: number, mode: "Light" | "Dark") {
+function getLevelStyle(i: number, mode: "Light" | "Dark", isMobile: boolean) {
   const t = themes[mode];
-  if (i % 4 === 0) return t.contour.major;
-  if (i % 2 === 0) return t.contour.mid;
-  return t.contour.fine;
+  const style =
+    i % 4 === 0
+      ? t.contour.major
+      : i % 2 === 0
+        ? t.contour.mid
+        : t.contour.fine;
+
+  return isMobile ? { ...style, opacity: style.opacity * 0.4 } : style;
 }
 
 function buildGeometry(
@@ -51,8 +56,8 @@ const HeightMap = () => {
   const { width } = useWindowSize();
   const isMobile = width < 768;
 
-  const LEVELS = isMobile ? 8 : CONTOUR_LEVELS;
-  const GRID = isMobile ? 64 : GRID_SIZE;
+  const LEVELS = isMobile ? 5 : CONTOUR_LEVELS;
+  const GRID = isMobile ? 48 : GRID_SIZE;
   const aspect = size.width / size.height;
 
   const halfX = (WORLD_SIZE * aspect) / 2;
@@ -75,8 +80,8 @@ const HeightMap = () => {
 
     const map = generateHeightMap({
       gridSize: GRID,
-      octaves: isMobile ? 3 : 6,
-      scale: isMobile ? 5 : 3.5,
+      octaves: isMobile ? 2 : 6,
+      scale: isMobile ? 8 : 3.5,
       persistence: 0.5,
       lacunarity: 2.0,
     });
@@ -112,7 +117,7 @@ const HeightMap = () => {
     <group>
       {geometries.map((geo, i) => {
         if (!geo) return null;
-        const { opacity, color } = getLevelStyle(i, mode);
+        const { opacity, color } = getLevelStyle(i, mode, isMobile);
         return (
           <lineSegments key={i} geometry={geo}>
             <shaderMaterial
