@@ -32,7 +32,7 @@ const IntroHeader = () => {
             textTransform: "uppercase",
           }}
         >
-          Frontend Developer
+          Full Stack Developer & Designer
         </div>
       </div>
     </div>
