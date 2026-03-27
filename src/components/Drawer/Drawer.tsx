@@ -60,7 +60,9 @@ const Drawer = ({ menuItem }: DrawerProps) => {
       </div>
       <div
         className="drawer-content"
-        style={{ transform: isActive ? "translateX(0)" : "translateX(100%)" }}
+        style={{
+          transform: isActive ? "translateX(0)" : "translateX(100%)",
+        }}
       >
         <div>{pageMap[menuState]}</div>
       </div>

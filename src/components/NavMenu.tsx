@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import Drawer from "./Drawer/Drawer";
 
 const MenuItem = ({
@@ -41,7 +41,6 @@ export const menuItems = ["About", "Work", "Contact"];
 
 const NavMenu = () => {
   const [activeItem, setActiveItem] = React.useState<string>("Home");
-  const drawerRef = useRef<HTMLDivElement>(null);
 
   const handleClick = (label: string) => {
     setActiveItem(label);
