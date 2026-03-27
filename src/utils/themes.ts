@@ -3,15 +3,15 @@ export const themes = {
     bg: "#e4e4df",
     contour: {
       major: {
-        color: normalizeArray([84, 82, 51]),
+        color: normalizeArray([153, 151, 129]),
         opacity: 0.78,
       },
       mid: {
-        color: normalizeArray([122, 118, 117]),
+        color: normalizeArray([117, 94, 88]),
         opacity: 0.42,
       },
       fine: {
-        color: normalizeArray([102, 97, 85]),
+        color: normalizeArray([87, 77, 54]),
         opacity: 0.22,
       },
     },

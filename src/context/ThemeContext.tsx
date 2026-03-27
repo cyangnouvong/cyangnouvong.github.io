@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 type Mode = "Light" | "Dark";
 
@@ -14,7 +14,6 @@ const themes = {
     "--bg": "#1a1a17",
     "--ink": "#e4e4df",
     "--ink-mid": "#a8a899",
-    // "--ink-mid": "#c8c8b8",
     "--ink-muted": "#6b6b5e",
     "--ink-faint": "#4a4a40",
   },
@@ -34,8 +33,33 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
+function getPreferredMode(): Mode {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "Dark"
+    : "Light";
+}
+
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [mode, setMode] = useState<Mode>("Light");
+  const preferredMode: Mode = getPreferredMode();
+  const [mode, setMode] = useState<Mode>(preferredMode);
+
+  useEffect(() => {
+    applyTheme(mode);
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+
+    const listener = (e: MediaQueryListEvent) => {
+      const newMode: Mode = e.matches ? "Dark" : "Light";
+      setMode(newMode);
+      applyTheme(newMode);
+    };
+
+    media.addEventListener("change", listener);
+
+    return () => media.removeEventListener("change", listener);
+  }, []);
 
   const handleSetMode = (newMode: Mode) => {
     setMode(newMode);

@@ -19,6 +19,7 @@ const IntroHeader = () => {
           style={{
             fontFamily: "var(--font-display)",
             fontSize: "var(--text-xl)",
+            color: "var(--ink)",
           }}
         >
           Chelsea Yangnouvong
