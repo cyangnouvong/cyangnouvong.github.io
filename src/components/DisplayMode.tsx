@@ -39,7 +39,7 @@ const Button = ({ label, active, onClick }: ButtonProps) => {
           height: "10px",
           border: "1px solid currentColor",
           backgroundColor: active ? "currentColor" : "transparent",
-          transition: "background-color 0.2s",
+          transition: "background-color 0.4s",
         }}
       />
       <span>{label}</span>

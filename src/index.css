@@ -49,3 +49,8 @@ body,
   overflow: hidden;
   font-family: var(--font-ui);
 }
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
