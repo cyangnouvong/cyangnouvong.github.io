@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "../../context/ThemeContext";
-import DarkPlane from "./../../assets/brownPlane-alt.svg";
-import LightPlane from "./../../assets/lightPlane.svg";
+import DarkPlane from "./../../assets/plane-alt.svg";
+import LightPlane from "./../../assets/plane.svg";
 import "./styles.css";
 
 type FlyingPlaneProps = {
