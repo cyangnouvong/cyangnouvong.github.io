@@ -6,7 +6,7 @@ import LogoReveal from "./components/LogoReveal/LogoReveal";
 import Scene from "./components/Scene";
 
 const App = () => {
-  const [logoComplete, setLogoComplete] = useState(false);
+  const [, setLogoComplete] = useState(false);
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
