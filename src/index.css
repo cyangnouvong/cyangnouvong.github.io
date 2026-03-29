@@ -15,6 +15,8 @@
   --ink-faint: #aaaaa0;
   --drawer-bg: rgba(197, 197, 190, 0.7);
 
+  --accent: #9eb1bd;
+
   --curve: cubic-bezier(0.16, 1, 0.3, 1);
 
   --font-display: "Cormorant Garamond", serif;

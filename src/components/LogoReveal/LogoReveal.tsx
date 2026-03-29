@@ -66,12 +66,24 @@ const LogoReveal = ({ onComplete }: { onComplete?: () => void }) => {
               : "none",
           }}
         >
+          <defs>
+            <filter id="glow">
+              <feDropShadow
+                dx="0"
+                dy="0"
+                stdDeviation="5"
+                floodColor="var(--accent)"
+                floodOpacity="1"
+              />
+            </filter>
+          </defs>
           <circle
             cx="170"
             cy="170"
             r="160"
-            fill="var(--ink-faint)"
-            opacity="0.3"
+            fill="var(--accent)"
+            opacity="1"
+            filter="url(#glow)"
           />
         </svg>
         <svg
@@ -89,7 +101,7 @@ const LogoReveal = ({ onComplete }: { onComplete?: () => void }) => {
               : "none",
           }}
         >
-          <circle cx="170" cy="170" r="160" fill="var(--ink-faint)" />
+          <circle cx="170" cy="170" r="160" fill="var(--bg)" />
         </svg>
         <img
           src={logo}
