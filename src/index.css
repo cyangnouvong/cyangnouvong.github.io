@@ -15,8 +15,10 @@
   --ink-faint: #aaaaa0;
   --drawer-bg: rgba(197, 197, 190, 0.7);
 
+  --curve: cubic-bezier(0.16, 1, 0.3, 1);
+
   --font-display: "Cormorant Garamond", serif;
-  --font-ui: "Karla", sans-serif;
+  --font-ui: "Inter", sans-serif;
 
   --text-xs: clamp(0.625rem, 0.8vw, 0.875rem);
   --text-sm: clamp(0.8125rem, 1vw, 1rem);

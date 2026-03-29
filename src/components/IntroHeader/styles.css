@@ -1,0 +1,22 @@
+@keyframes clipReveal {
+  from {
+    clip-path: inset(100% 0 0 0);
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  to {
+    clip-path: inset(0% 0 0 0);
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes subtitleReveal {
+  from {
+    opacity: 0;
+    letter-spacing: 0.5em;
+  }
+  to {
+    opacity: 1;
+    letter-spacing: 0.3em;
+  }
+}

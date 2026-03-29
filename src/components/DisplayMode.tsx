@@ -49,8 +49,7 @@ const Button = ({ label, active, onClick }: ButtonProps) => {
 
 const DisplayMode = () => {
   const { mode, setMode } = useTheme();
-  const { width } = useWindowSize();
-  const isMobile = width < 768;
+  const { isMobile } = useWindowSize();
 
   return (
     <div
