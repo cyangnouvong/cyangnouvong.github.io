@@ -15,7 +15,7 @@ const CTAButton = () => {
           {
             position: "absolute",
             top: isMobile
-              ? "calc(65% - clamp(80px, 10vh, 120px) / 2)"
+              ? "calc(70% - clamp(80px, 10vh, 120px) / 2)"
               : "calc(50% - clamp(80px, 10vh, 120px) / 2)",
             left: "clamp(40px, 10vw, 300px)",
             width: "clamp(200px, 15vw, 320px)",
