@@ -1,0 +1,33 @@
+.border-box {
+  position: fixed;
+  inset: 0;
+  margin: var(--margin-y) var(--margin-x);
+  border: 1px solid var(--ink-muted);
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.home-scene {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  margin-bottom: -100vh; /* Pull up so sticky does not add height */
+}
+
+.ui-layer {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+.transition-effect {
+  position: absolute;
+  width: 100%;
+  height: 200px;
+  margin-bottom: -100px;
+  bottom: 0;
+  z-index: 5;
+  background: linear-gradient(180deg, transparent 0%, var(--bg) 50%);
+  z-index: 0;
+}

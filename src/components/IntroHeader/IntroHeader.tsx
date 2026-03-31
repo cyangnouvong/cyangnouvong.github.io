@@ -31,7 +31,7 @@ const IntroHeader = ({ revealAfterMs = 0 }: { revealAfterMs?: number }) => {
               clipPath: "inset(100% 0 0 0)",
               opacity: 0,
               animation: mounted
-                ? "clipReveal 1.5s var(--curve) 60ms forwards"
+                ? "clipReveal 2s var(--curve) 60ms forwards"
                 : "none",
             }}
           >
