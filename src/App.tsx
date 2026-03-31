@@ -52,9 +52,9 @@ const App = () => {
           >
             See my work
           </CTAButton>
-          <div className="transition-effect" />
+          {/* <div className="transition-effect" /> */}
         </div>
-        <SecondPage />
+        {/* <SecondPage /> */}
       </div>
       <DisplayMode />
     </div>
