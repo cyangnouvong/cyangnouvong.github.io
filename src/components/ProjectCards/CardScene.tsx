@@ -6,7 +6,7 @@ import * as THREE from "three";
 import { createPlaneCanvas } from "./planeCanvas";
 
 const DAMP = 0.12;
-const X_NUDGE = 0.15;
+const X_NUDGE = 0.08;
 const Y_DROP = 0.12;
 const HOVER_LIFT = 0.15;
 
@@ -35,6 +35,7 @@ const Card = ({
   totalCards,
   planeImg,
   stencilRef,
+  isSquare,
 }: any) => {
   const colorMeshRef = useRef<THREE.Mesh>(null);
   const overlayFrontRef = useRef<THREE.Mesh>(null);
@@ -44,9 +45,9 @@ const Card = ({
 
   const GAP_UNIT = viewport.width / totalCards;
   const W = GAP_UNIT * 0.8;
-  const H = W * 2.2;
+  const H = W * (isSquare ? 1.0 : 2.2);
   const ACT_W = GAP_UNIT * 0.85;
-  const ACT_H = ACT_W * 2.4;
+  const ACT_H = ACT_W * (isSquare ? 1.0 : 2.4);
 
   const mid = Math.floor(totalCards / 2);
   const isActive = active === index;
@@ -219,10 +220,10 @@ const Card = ({
   );
 };
 
-const Scene = ({ active, setActive, planeImg }: any) => {
+const Scene = ({ active, setActive, planeImg, isSquare }: any) => {
   return (
     <group>
-      <StencilClear />
+      <StencilClear />s
       {CARDS.map((card, i) => (
         <Card
           key={i}
@@ -233,6 +234,7 @@ const Scene = ({ active, setActive, planeImg }: any) => {
           totalCards={CARDS.length}
           planeImg={planeImg}
           stencilRef={STENCIL_REFS[i]}
+          isSquare={isSquare}
         />
       ))}
     </group>

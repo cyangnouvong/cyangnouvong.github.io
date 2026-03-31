@@ -4,11 +4,19 @@ import Scene from "./CardScene";
 import { loadPlaneImage } from "./planeCanvas";
 import { useTheme } from "../../context/ThemeContext";
 
-const ProjectCards = (
-  active: number | null,
-  setActive: (active: number | null) => void,
-  inView: boolean,
-) => {
+interface ProjectCardsProps {
+  active: number | null;
+  setActive: (active: number | null) => void;
+  inView: boolean;
+  isSquare: boolean;
+}
+
+const ProjectCards = ({
+  active,
+  setActive,
+  inView,
+  isSquare,
+}: ProjectCardsProps) => {
   const [planeImg, setPlaneImg] = useState<HTMLImageElement | null>(null);
   const { mode } = useTheme();
 
@@ -17,24 +25,28 @@ const ProjectCards = (
   }, [mode]);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        overflow: "hidden",
-        position: "relative",
-      }}
-    >
+    <div style={{ width: "100%", height: "100%", position: "relative" }}>
       <Canvas
         orthographic
         camera={{ position: [0, 0, 10], zoom: 100 }}
         gl={{ antialias: true, stencil: true, premultipliedAlpha: false }}
-        style={{ position: "absolute", inset: 0 }}
+        style={{
+          position: "absolute",
+          top: 0,
+          bottom: 0,
+          left: "-5%",
+          width: "110%",
+        }}
         onPointerMissed={() => setActive(null)}
         frameloop={inView ? "always" : "never"}
         dpr={[1, 2]}
       >
-        <Scene active={active} setActive={setActive} planeImg={planeImg} />
+        <Scene
+          active={active}
+          setActive={setActive}
+          planeImg={planeImg}
+          isSquare={isSquare}
+        />
       </Canvas>
     </div>
   );

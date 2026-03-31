@@ -3,6 +3,7 @@ import useInView from "../../utils/useInView";
 import ProjectCards from "../ProjectCards/ProjectCards";
 import "./styles.css";
 import CTAButton from "../CTAButton/CTAButton";
+import { useWindowSize } from "../../utils/useWindowSize";
 
 interface AnimatedItemProps {
   children: React.ReactNode;
@@ -35,25 +36,88 @@ const AnimatedItem = ({
   </div>
 );
 
-const ProjectDescription = (active: number | null) => {
-  switch (active) {
-    case 0:
-      return "Description 1";
-    case 1:
-      return "Description 2";
-    case 2:
-      return "Description 3";
-    default:
-      return "Click on a project card to see the description.";
-  }
+const PROJECT_DESCRIPTIONS: Record<number, string> = {
+  0: "Description 1",
+  1: "Description 2",
+  2: "Description 3",
 };
 
-const SecondPage = () => {
-  const { ref, inView } = useInView(0.1);
-  const [active, setActive] = useState<number | null>(1);
+const ProjectDescription = (active: number | null) =>
+  active != null ? PROJECT_DESCRIPTIONS[active] : "Tap a card to see details.";
 
+interface PageProps {
+  inView: boolean;
+  active: number | null;
+  setActive: (active: number | null) => void;
+}
+
+interface MobilePageProps extends PageProps {
+  pageRef: React.RefObject<HTMLDivElement | null>;
+}
+
+const MobilePage = ({
+  pageRef,
+  inView,
+  active,
+  setActive,
+}: MobilePageProps) => {
   return (
-    <div ref={ref} className="second-page" id="second-page">
+    <div ref={pageRef} className="second-page-mobile" id="second-page">
+      {/* Header */}
+      <div className="mobile-header">
+        <AnimatedItem inView={inView} delay={80}>
+          <p className="label">Selected works</p>
+        </AnimatedItem>
+        <AnimatedItem inView={inView} delay={180}>
+          <h2 className="heading">Things I've built</h2>
+        </AnimatedItem>
+        <AnimatedItem
+          inView={inView}
+          delay={300}
+          animationClass="grow"
+          time={2}
+        >
+          <div className="secondary-divider" />
+        </AnimatedItem>
+      </div>
+
+      {/* Single canvas with all 3 cards */}
+      <AnimatedItem inView={inView} delay={0} animationClass="fadeIn">
+        <div className="mobile-cards-wrapper">
+          <ProjectCards
+            active={active}
+            setActive={setActive}
+            inView={inView}
+            isSquare={true}
+          />
+        </div>
+      </AnimatedItem>
+
+      {/* Description + CTA below cards */}
+      <div className="mobile-footer">
+        <AnimatedItem inView={inView} delay={180}>
+          <p className="description">{ProjectDescription(active)}</p>
+        </AnimatedItem>
+        <AnimatedItem inView={inView} delay={300}>
+          <CTAButton
+            animationDelay={500}
+            style={{
+              width: "clamp(160px, 40vw, 260px)",
+              height: "clamp(48px, 7vh, 80px)",
+            }}
+            onClick={() => console.log("View project clicked!")}
+          >
+            View Project
+          </CTAButton>
+        </AnimatedItem>
+      </div>
+    </div>
+  );
+};
+
+const DesktopPage = ({ inView, active, setActive }: PageProps) => {
+  return (
+    <div className="second-page" id="second-page">
       <div
         style={{
           flex: "1 1 60%",
@@ -64,19 +128,19 @@ const SecondPage = () => {
           minHeight: 0,
         }}
       >
-        <div
-          style={{
-            height: "100%",
-            minHeight: 0,
-          }}
-        >
+        <div style={{ height: "100%", minHeight: 0 }}>
           <AnimatedItem
             inView={inView}
             delay={0}
             animationClass="fadeIn"
             styles={{ height: "100%" }}
           >
-            {ProjectCards(active, setActive, inView)}
+            <ProjectCards
+              active={active}
+              setActive={setActive}
+              inView={inView}
+              isSquare={false}
+            />
           </AnimatedItem>
         </div>
       </div>
@@ -109,13 +173,7 @@ const SecondPage = () => {
         <AnimatedItem inView={inView} delay={180}>
           <p className="description">{ProjectDescription(active)}</p>
         </AnimatedItem>
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
+        <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
           <AnimatedItem inView={inView} delay={0}>
             <CTAButton
               animationDelay={500}
@@ -130,6 +188,27 @@ const SecondPage = () => {
           </AnimatedItem>
         </div>
       </div>
+    </div>
+  );
+};
+
+const SecondPage = () => {
+  const { ref, inView } = useInView(0.1);
+  const [active, setActive] = useState<number | null>(1);
+  const { isMobile } = useWindowSize();
+
+  return (
+    <div ref={ref}>
+      {isMobile ? (
+        <MobilePage
+          pageRef={ref}
+          inView={inView}
+          active={active}
+          setActive={setActive}
+        />
+      ) : (
+        <DesktopPage inView={inView} active={active} setActive={setActive} />
+      )}
     </div>
   );
 };
