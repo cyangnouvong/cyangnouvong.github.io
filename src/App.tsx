@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import CTAButton from "./components/CTAButton/CTAButton";
 import DisplayMode from "./components/DisplayMode";
 import IntroHeader from "./components/IntroHeader/IntroHeader";
@@ -42,8 +42,8 @@ const App = () => {
             style={{
               position: "absolute",
               top: isMobile
-                ? "calc(90% - clamp(80px, 10vh, 120px) / 2)"
-                : "calc(50% - clamp(80px, 10vh, 120px) / 2)",
+                ? "calc(80% - clamp(60px, 8vh, 120px) / 2)"
+                : "calc(50% - clamp(60px, 8vh, 120px) / 2)",
               left: "clamp(40px, 10vw, 300px)",
               width: "clamp(200px, 15vw, 320px)",
               height: "clamp(60px, 8vh, 120px)",

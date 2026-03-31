@@ -38,7 +38,7 @@ const AnimatedItem = ({
 const ProjectDescription = (active: number | null) => {
   switch (active) {
     case 0:
-      return "Descrition 1";
+      return "Description 1";
     case 1:
       return "Description 2";
     case 2:
