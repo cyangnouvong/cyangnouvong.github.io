@@ -28,12 +28,12 @@ function isFrontPass(t: number): boolean {
 }
 
 export function createPlaneCanvas(overlayAspect: number, isSquare = false) {
-  const H = 1024;
+  // Halve canvas resolution on mobile. Cards are smaller on screen so
+  const H = isSquare ? 512 : 1024;
   const W = Math.round(H * overlayAspect);
 
-  // Scale plane and trail relative to canvas height.
-  // Square (mobile) cards are much shorter on screen, so we bump sizes up
-  // so they read clearly at the smaller rendered size.
+  // Scale plane and trail relative to canvas height so they look consistent
+  // regardless of resolution or card aspect ratio.
   const PLANE_SIZE_FRONT = H * (isSquare ? 0.12 : 0.055);
   const PLANE_SIZE_BACK = H * (isSquare ? 0.095 : 0.043);
   const TRAIL_RADIUS_MIN = H * (isSquare ? 0.004 : 0.0012);

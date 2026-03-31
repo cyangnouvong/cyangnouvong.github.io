@@ -39,7 +39,6 @@ const ProjectCards = ({
         }}
         onPointerMissed={() => setActive(null)}
         frameloop={inView ? "always" : "never"}
-        dpr={[1, 2]}
       >
         <Scene
           active={active}
