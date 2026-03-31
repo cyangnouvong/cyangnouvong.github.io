@@ -42,7 +42,7 @@ const App = () => {
             style={{
               position: "absolute",
               top: isMobile
-                ? "calc(80% - clamp(60px, 8vh, 120px) / 2)"
+                ? "calc(90% - clamp(60px, 8vh, 120px) / 2)"
                 : "calc(50% - clamp(60px, 8vh, 120px) / 2)",
               left: "clamp(40px, 10vw, 300px)",
               width: "clamp(200px, 15vw, 320px)",

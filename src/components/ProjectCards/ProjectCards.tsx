@@ -32,6 +32,7 @@ const ProjectCards = (
         style={{ position: "absolute", inset: 0 }}
         onPointerMissed={() => setActive(null)}
         frameloop={inView ? "always" : "never"}
+        dpr={[1, 2]}
       >
         <Scene active={active} setActive={setActive} planeImg={planeImg} />
       </Canvas>

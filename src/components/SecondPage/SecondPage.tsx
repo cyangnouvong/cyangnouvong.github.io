@@ -93,7 +93,7 @@ const SecondPage = () => {
         }}
       >
         <AnimatedItem inView={inView} delay={80}>
-          <p className="label">Selected work</p>
+          <p className="label">Selected works</p>
         </AnimatedItem>
         <AnimatedItem inView={inView} delay={180}>
           <h2 className="heading">Things I've built</h2>
