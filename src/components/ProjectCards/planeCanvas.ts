@@ -27,9 +27,17 @@ function isFrontPass(t: number): boolean {
   return spiralPos(t + 0.001).x > spiralPos(t).x;
 }
 
-export function createPlaneCanvas(overlayAspect: number) {
+export function createPlaneCanvas(overlayAspect: number, isSquare = false) {
   const H = 1024;
   const W = Math.round(H * overlayAspect);
+
+  // Scale plane and trail relative to canvas height.
+  // Square (mobile) cards are much shorter on screen, so we bump sizes up
+  // so they read clearly at the smaller rendered size.
+  const PLANE_SIZE_FRONT = H * (isSquare ? 0.12 : 0.055);
+  const PLANE_SIZE_BACK = H * (isSquare ? 0.095 : 0.043);
+  const TRAIL_RADIUS_MIN = H * (isSquare ? 0.004 : 0.0012);
+  const TRAIL_RADIUS_MAX = H * (isSquare ? 0.012 : 0.0044);
 
   const canvasFront = document.createElement("canvas");
   const canvasBack = document.createElement("canvas");
@@ -76,7 +84,8 @@ export function createPlaneCanvas(overlayAspect: number) {
 
       const frac = i / trail.length;
       const alpha = Math.pow(frac, 1.8) * (isFrontLayer ? 0.9 : 0.5);
-      const radius = 1.2 + frac * 3.2;
+      const radius =
+        TRAIL_RADIUS_MIN + frac * (TRAIL_RADIUS_MAX - TRAIL_RADIUS_MIN);
 
       ctx.beginPath();
       ctx.arc(trail[i].x * W, trail[i].y * H, radius, 0, Math.PI * 2);
@@ -90,7 +99,7 @@ export function createPlaneCanvas(overlayAspect: number) {
     const px = pos.x * W;
     const py = pos.y * H;
 
-    const size = isFrontLayer ? 56 : 44;
+    const size = isFrontLayer ? PLANE_SIZE_FRONT : PLANE_SIZE_BACK;
     const half = size / 2;
 
     ctx.save();

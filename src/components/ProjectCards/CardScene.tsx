@@ -73,7 +73,7 @@ const Card = ({
   }, [color]);
 
   const { planeCanvas, textureFront, textureBack } = useMemo(() => {
-    const pc = createPlaneCanvas(overlayAspect);
+    const pc = createPlaneCanvas(overlayAspect, isSquare);
     const tf = new THREE.CanvasTexture(pc.canvasFront);
     const tb = new THREE.CanvasTexture(pc.canvasBack);
 
