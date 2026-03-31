@@ -7,6 +7,7 @@ import { useTheme } from "../../context/ThemeContext";
 const ProjectCards = (
   active: number | null,
   setActive: (active: number | null) => void,
+  inView: boolean,
 ) => {
   const [planeImg, setPlaneImg] = useState<HTMLImageElement | null>(null);
   const { mode } = useTheme();
@@ -29,8 +30,8 @@ const ProjectCards = (
         camera={{ position: [0, 0, 10], zoom: 100 }}
         gl={{ antialias: true, stencil: true, premultipliedAlpha: false }}
         style={{ position: "absolute", inset: 0 }}
-        resize={{ debounce: 0 }}
         onPointerMissed={() => setActive(null)}
+        frameloop={inView ? "always" : "never"}
       >
         <Scene active={active} setActive={setActive} planeImg={planeImg} />
       </Canvas>

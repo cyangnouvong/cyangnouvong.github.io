@@ -76,7 +76,7 @@ const SecondPage = () => {
             animationClass="fadeIn"
             styles={{ height: "100%" }}
           >
-            {ProjectCards(active, setActive)}
+            {ProjectCards(active, setActive, inView)}
           </AnimatedItem>
         </div>
       </div>
