@@ -30,9 +30,9 @@ const App = () => {
       {/* Border box */}
       <div className="border-box" data-scroll-root>
         {/* Animated background */}
-        <div className="home-scene">
-          <Scene />
-        </div>
+        {/* <div className="home-scene"> */}
+        <Scene />
+        {/* </div> */}
 
         {/* UI Components */}
         <div className="ui-layer">
@@ -52,9 +52,9 @@ const App = () => {
           >
             See my work
           </CTAButton>
-          {/* <div className="transition-effect" /> */}
+          <div className="transition-effect" />
         </div>
-        {/* <SecondPage /> */}
+        <SecondPage />
       </div>
       <DisplayMode />
     </div>
