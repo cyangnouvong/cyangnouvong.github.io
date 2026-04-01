@@ -4,6 +4,7 @@ import ProjectCards from "../ProjectCards/ProjectCards";
 import "./styles.css";
 import CTAButton from "../CTAButton/CTAButton";
 import { useWindowSize } from "../../utils/useWindowSize";
+import Drawer from "../Drawer/Drawer";
 
 interface AnimatedItemProps {
   children: React.ReactNode;
@@ -49,6 +50,8 @@ interface PageProps {
   inView: boolean;
   active: number | null;
   setActive: (active: number | null) => void;
+  projectView: boolean;
+  setProjectView: (active: boolean) => void;
 }
 
 interface MobilePageProps extends PageProps {
@@ -60,9 +63,16 @@ const MobilePage = ({
   inView,
   active,
   setActive,
+  projectView,
+  setProjectView,
 }: MobilePageProps) => {
   return (
     <div ref={pageRef} className="second-page-mobile" id="second-page">
+      <Drawer
+        project={active}
+        active={projectView}
+        setIsActive={(view) => setProjectView(view)}
+      />
       {/* Header */}
       <div className="mobile-header">
         <AnimatedItem inView={inView} delay={80}>
@@ -105,7 +115,7 @@ const MobilePage = ({
               width: "clamp(160px, 40vw, 260px)",
               height: "clamp(48px, 7vh, 80px)",
             }}
-            onClick={() => console.log("View project clicked!")}
+            onClick={() => setProjectView(true)}
           >
             View Project
           </CTAButton>
@@ -115,9 +125,20 @@ const MobilePage = ({
   );
 };
 
-const DesktopPage = ({ inView, active, setActive }: PageProps) => {
+const DesktopPage = ({
+  inView,
+  active,
+  setActive,
+  projectView,
+  setProjectView,
+}: PageProps) => {
   return (
     <div className="second-page" id="second-page">
+      <Drawer
+        project={active}
+        active={projectView}
+        setIsActive={(view) => setProjectView(view)}
+      />
       <div
         style={{
           flex: "1 1 60%",
@@ -178,10 +199,10 @@ const DesktopPage = ({ inView, active, setActive }: PageProps) => {
             <CTAButton
               animationDelay={500}
               style={{
-                width: "clamp(200px, 15vw, 320px)",
-                height: "clamp(60px, 8vh, 120px)",
+                width: "clamp(160px, 40vw, 260px)",
+                height: "clamp(48px, 7vh, 80px)",
               }}
-              onClick={() => console.log("View project clicked!")}
+              onClick={() => setProjectView(true)}
             >
               View Project
             </CTAButton>
@@ -196,20 +217,31 @@ const SecondPage = () => {
   const { ref, inView } = useInView(0.1);
   const [active, setActive] = useState<number | null>(1);
   const { isMobile } = useWindowSize();
+  const [projectView, setProjectView] = useState<boolean>(false);
 
   return (
-    <div ref={ref}>
-      {isMobile ? (
-        <MobilePage
-          pageRef={ref}
-          inView={inView}
-          active={active}
-          setActive={setActive}
-        />
-      ) : (
-        <DesktopPage inView={inView} active={active} setActive={setActive} />
-      )}
-    </div>
+    <>
+      <div ref={ref}>
+        {isMobile ? (
+          <MobilePage
+            pageRef={ref}
+            inView={inView}
+            active={active}
+            setActive={setActive}
+            projectView={projectView}
+            setProjectView={setProjectView}
+          />
+        ) : (
+          <DesktopPage
+            inView={inView}
+            active={active}
+            setActive={setActive}
+            projectView={projectView}
+            setProjectView={(page) => setProjectView(page)}
+          />
+        )}
+      </div>
+    </>
   );
 };
 
