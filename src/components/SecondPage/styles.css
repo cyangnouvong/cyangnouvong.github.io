@@ -121,11 +121,29 @@
 }
 
 /* Desktop: vertical column, bottom-right */
+.overlay-right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 4px;
+  flex-shrink: 0;
+}
+
+/* Mobile: horizontal row */
+.second-page-mobile .overlay-right {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 0;
+}
+
+/* Desktop: vertical column, bottom-right */
 .overlay-dots {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-bottom: 4px;
+  padding-bottom: 0;
   flex-shrink: 0;
 }
 
@@ -134,10 +152,11 @@
   flex-direction: row;
   gap: 10px;
   padding-bottom: 0;
-  padding-left: 2px;
+  padding-left: 0;
 }
 
 .overlay-dot {
+  all: unset;
   display: block;
   width: 6px;
   height: 6px;
@@ -146,11 +165,18 @@
   transition:
     background 0.3s ease,
     transform 0.3s ease;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .overlay-dot--active {
   background: rgba(228, 228, 223, 0.75);
   transform: scale(1.35);
+}
+
+.overlay-dot:focus-visible {
+  outline: 2px solid rgba(228, 228, 223, 0.75);
+  outline-offset: 3px;
 }
 
 .label {

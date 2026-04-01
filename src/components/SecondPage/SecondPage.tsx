@@ -4,7 +4,6 @@ import ProjectCards from "../ProjectCards/ProjectCards";
 import "./styles.css";
 import CTAButton from "../CTAButton/CTAButton";
 import { useWindowSize } from "../../utils/useWindowSize";
-import Drawer from "../Drawer/Drawer";
 
 interface AnimatedItemProps {
   children: React.ReactNode;
@@ -46,11 +45,11 @@ const PROJECTS: { title: string; description: string }[] = [
 interface OverlayProps {
   inView: boolean;
   active: number | null;
-  onViewProject: () => void;
-  isMobile: boolean;
+  setActive: (active: number | null) => void;
+  isPortrait: boolean;
 }
 
-const Overlay = ({ inView, active, onViewProject, isMobile }: OverlayProps) => {
+const Overlay = ({ inView, active, setActive, isPortrait }: OverlayProps) => {
   const proj = active != null ? PROJECTS[active] : null;
 
   return (
@@ -79,7 +78,7 @@ const Overlay = ({ inView, active, onViewProject, isMobile }: OverlayProps) => {
             <p className="overlay-desc">
               {proj
                 ? proj.description
-                : isMobile
+                : isPortrait
                   ? "Swipe to explore."
                   : "Tap a card to see details."}
             </p>
@@ -92,20 +91,31 @@ const Overlay = ({ inView, active, onViewProject, isMobile }: OverlayProps) => {
                 width: "clamp(180px, 30vw, 220px)",
                 height: "clamp(50px, 6vh, 64px)",
               }}
-              onClick={onViewProject}
+              onClick={
+                () =>
+                  console.log("View project") /* TODO: implement project view */
+              }
             >
               View Project
             </CTAButton>
           </AnimatedItem>
         </div>
 
-        <div className="overlay-dots">
-          {PROJECTS.map((_, i) => (
-            <span
-              key={i}
-              className={`overlay-dot${active === i ? " overlay-dot--active" : ""}`}
-            />
-          ))}
+        <div className={"overlay-right"}>
+          <div className="overlay-dots">
+            {PROJECTS.map((_, i) => (
+              <button
+                key={i}
+                className={`overlay-dot${active === i ? " overlay-dot--active" : ""}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActive(i);
+                }}
+                aria-label={`View ${PROJECTS[i].title}`}
+                aria-pressed={active === i}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -113,12 +123,14 @@ const Overlay = ({ inView, active, onViewProject, isMobile }: OverlayProps) => {
 };
 
 interface MobilePageProps {
-  pageRef: React.RefObject<HTMLDivElement | null>;
+  pageRef: React.Ref<HTMLDivElement>;
   inView: boolean;
   active: number | null;
   setActive: (active: number | null) => void;
   projectView: boolean;
   setProjectView: (v: boolean) => void;
+  isPortrait: boolean;
+  handleClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 const MobilePage = ({
@@ -126,22 +138,17 @@ const MobilePage = ({
   inView,
   active,
   setActive,
-  projectView,
-  setProjectView,
+  isPortrait,
+  handleClick,
 }: MobilePageProps) => (
   <div ref={pageRef} className="second-page-mobile" id="second-page">
-    <Drawer
-      project={active}
-      active={projectView}
-      setIsActive={(v) => setProjectView(v)}
-    />
-    <div className="canvas-frame">
+    <div className="canvas-frame" onClick={handleClick}>
       <ProjectCards active={active} setActive={setActive} inView={inView} />
       <Overlay
         inView={inView}
         active={active}
-        onViewProject={() => setProjectView(true)}
-        isMobile={true}
+        setActive={setActive}
+        isPortrait={isPortrait}
       />
     </div>
   </div>
@@ -153,21 +160,16 @@ interface DesktopPageProps {
   setActive: (active: number | null) => void;
   projectView: boolean;
   setProjectView: (v: boolean) => void;
+  isPortrait: boolean;
 }
 
 const DesktopPage = ({
   inView,
   active,
   setActive,
-  projectView,
-  setProjectView,
+  isPortrait,
 }: DesktopPageProps) => (
   <div className="second-page" id="second-page">
-    <Drawer
-      project={active}
-      active={projectView}
-      setIsActive={(v) => setProjectView(v)}
-    />
     <AnimatedItem
       inView={inView}
       delay={0}
@@ -179,8 +181,8 @@ const DesktopPage = ({
         <Overlay
           inView={inView}
           active={active}
-          onViewProject={() => setProjectView(true)}
-          isMobile={false}
+          setActive={setActive}
+          isPortrait={isPortrait}
         />
       </div>
     </AnimatedItem>
@@ -189,13 +191,33 @@ const DesktopPage = ({
 
 const SecondPage = () => {
   const { ref, inView } = useInView(0.1);
-  const { isMobile } = useWindowSize();
-  const [active, setActive] = useState<number | null>(isMobile ? 0 : 1);
+  const { isMobile, width, height } = useWindowSize();
+  const isPortrait = height > width;
+  const [active, setActive] = useState<number | null>(isPortrait ? 0 : 1);
   const [projectView, setProjectView] = useState<boolean>(false);
 
   const handleSetActive = (next: number | null) => {
     if (isMobile && next === null) return;
     setActive(next);
+  };
+
+  const handleMobileClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+
+    const clickX = e.clientX - rect.left; // position inside container
+    const midpoint = rect.width / 2;
+
+    if (clickX < midpoint) {
+      setActive((prev) => {
+        if (prev === null) return 0;
+        return prev > 0 ? prev - 1 : prev;
+      });
+    } else {
+      setActive((prev) => {
+        if (prev === null) return 0;
+        return prev < PROJECTS.length - 1 ? prev + 1 : prev;
+      });
+    }
   };
 
   return isMobile ? (
@@ -206,6 +228,8 @@ const SecondPage = () => {
       setActive={handleSetActive}
       projectView={projectView}
       setProjectView={setProjectView}
+      isPortrait={isPortrait}
+      handleClick={handleMobileClick}
     />
   ) : (
     <div ref={ref}>
@@ -215,6 +239,7 @@ const SecondPage = () => {
         setActive={setActive}
         projectView={projectView}
         setProjectView={setProjectView}
+        isPortrait={isPortrait}
       />
     </div>
   );
