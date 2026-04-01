@@ -1,10 +1,10 @@
 import LightPlane from "../../assets/plane.svg";
 import DarkPlane from "../../assets/plane-alt.svg";
 
-const TRAIL_MAX = 120;
-const PLANE_SPEED = 0.001;
-const ZIG_AMPLITUDE = 0.47;
-const ZIG_FREQUENCY = 0.1;
+const TRAIL_MAX = 360;
+const PLANE_SPEED = 0.0008;
+const ZIG_AMPLITUDE = 0.32;
+const ZIG_FREQUENCY = 0.18;
 const SVG_ROTATION_OFFSET = Math.PI / 4;
 
 export function loadPlaneImage(mode: string): Promise<HTMLImageElement> {
@@ -27,17 +27,14 @@ function isFrontPass(t: number): boolean {
   return spiralPos(t + 0.001).x > spiralPos(t).x;
 }
 
-export function createPlaneCanvas(overlayAspect: number, isSquare = false) {
-  // Halve canvas resolution on mobile. Cards are smaller on screen so
-  const H = isSquare ? 512 : 1024;
-  const W = Math.round(H * overlayAspect);
+export function createPlaneCanvas(overlayAspect: number) {
+  const H = 1024;
+  const W = Math.round(Math.max(256, Math.min(H * overlayAspect, H * 2)));
 
-  // Scale plane and trail relative to canvas height so they look consistent
-  // regardless of resolution or card aspect ratio.
-  const PLANE_SIZE_FRONT = H * (isSquare ? 0.12 : 0.055);
-  const PLANE_SIZE_BACK = H * (isSquare ? 0.095 : 0.043);
-  const TRAIL_RADIUS_MIN = H * (isSquare ? 0.004 : 0.0012);
-  const TRAIL_RADIUS_MAX = H * (isSquare ? 0.012 : 0.0044);
+  const PLANE_SIZE_FRONT = H * 0.055;
+  const PLANE_SIZE_BACK = H * 0.043;
+  const TRAIL_RADIUS_MIN = H * 0.0012;
+  const TRAIL_RADIUS_MAX = H * 0.004;
 
   const canvasFront = document.createElement("canvas");
   const canvasBack = document.createElement("canvas");
@@ -60,9 +57,8 @@ export function createPlaneCanvas(overlayAspect: number, isSquare = false) {
     const pos = spiralPos(state.t);
     const ahead = spiralPos(state.t + 0.001);
 
-    const dx = (ahead.x - pos.x) * overlayAspect;
-    const dy = ahead.y - pos.y;
-
+    const dx = (ahead.x - pos.x) * W;
+    const dy = (ahead.y - pos.y) * H;
     state.angle = Math.atan2(dy, dx);
 
     trail.push({ x: pos.x, y: pos.y, front: isFrontPass(state.t) });
@@ -98,7 +94,6 @@ export function createPlaneCanvas(overlayAspect: number, isSquare = false) {
     const pos = spiralPos(state.t);
     const px = pos.x * W;
     const py = pos.y * H;
-
     const size = isFrontLayer ? PLANE_SIZE_FRONT : PLANE_SIZE_BACK;
     const half = size / 2;
 
@@ -106,7 +101,6 @@ export function createPlaneCanvas(overlayAspect: number, isSquare = false) {
     ctx.translate(px, py);
 
     const flyingLeft = Math.cos(state.angle) < 0;
-
     if (flyingLeft) {
       ctx.scale(1, -1);
       ctx.rotate(-state.angle + SVG_ROTATION_OFFSET);

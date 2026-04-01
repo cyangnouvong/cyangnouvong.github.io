@@ -1,19 +1,15 @@
 import { useRef, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { Text } from "@react-three/drei";
 import { damp3, dampC } from "maath/easing";
 import * as THREE from "three";
 import { createPlaneCanvas } from "./planeCanvas";
 
 const DAMP = 0.12;
-const X_NUDGE = 0.08;
-const Y_DROP = 0.12;
-const HOVER_LIFT = 0.15;
 
 const STENCIL_REFS = [1, 2, 3];
 
 const CARDS = [
-  { color: "#C2B6D3" },
+  { color: "#8d80a0" },
   { color: "#a4af94" },
   { color: "#c585a6" },
 ];
@@ -29,13 +25,12 @@ const StencilClear = () => {
 
 const Card = ({
   index,
-  active = 1,
+  active,
   setActive,
   color,
   totalCards,
   planeImg,
   stencilRef,
-  isSquare,
 }: any) => {
   const colorMeshRef = useRef<THREE.Mesh>(null);
   const overlayFrontRef = useRef<THREE.Mesh>(null);
@@ -43,28 +38,24 @@ const Card = ({
   const hovered = useRef(false);
   const { viewport } = useThree();
 
-  const GAP_UNIT = viewport.width / totalCards;
-  const W = GAP_UNIT * 0.8;
-  const H = W * (isSquare ? 1.0 : 2.2);
-  const ACT_W = GAP_UNIT * 0.85;
-  const ACT_H = ACT_W * (isSquare ? 1.0 : 2.4);
-
-  const mid = Math.floor(totalCards / 2);
+  const activeIndex = active ?? 0;
   const isActive = active === index;
+  const mid = Math.floor(totalCards / 2);
 
-  const overlayW = ACT_W * (0.47 * 2 + 0.15);
-  const overlayH = ACT_H * 1.25;
-  const overlayAspect = overlayW / overlayH;
+  const cardAspect = useMemo(() => {
+    const portrait = viewport.height > viewport.width;
+    return portrait
+      ? viewport.width / viewport.height
+      : viewport.width / totalCards / viewport.height;
+  }, [viewport.width, viewport.height, totalCards]);
 
   const fullColor = useMemo(() => new THREE.Color(color), [color]);
-
   const hoverColor = useMemo(() => {
     const c = new THREE.Color(color);
     const hsl = { h: 0, s: 0, l: 0 };
     c.getHSL(hsl);
     return new THREE.Color().setHSL(hsl.h, hsl.s * 0.4, hsl.l * 0.6);
   }, [color]);
-
   const idleColor = useMemo(() => {
     const c = new THREE.Color(color);
     const hsl = { h: 0, s: 0, l: 0 };
@@ -73,16 +64,15 @@ const Card = ({
   }, [color]);
 
   const { planeCanvas, textureFront, textureBack } = useMemo(() => {
-    const pc = createPlaneCanvas(overlayAspect, isSquare);
+    const pc = createPlaneCanvas(cardAspect);
     const tf = new THREE.CanvasTexture(pc.canvasFront);
     const tb = new THREE.CanvasTexture(pc.canvasBack);
-
-    tf.colorSpace = THREE.SRGBColorSpace;
-    tb.colorSpace = THREE.SRGBColorSpace;
+    tf.colorSpace = tb.colorSpace = THREE.SRGBColorSpace;
     tf.minFilter = tb.minFilter = THREE.LinearFilter;
-
     return { planeCanvas: pc, textureFront: tf, textureBack: tb };
-  }, [overlayAspect]);
+  }, [cardAspect]);
+
+  const baseOrder = index * 3;
 
   const cardMaterial = useMemo(
     () =>
@@ -115,41 +105,50 @@ const Card = ({
       new THREE.MeshBasicMaterial({
         map: textureFront,
         toneMapped: false,
-        transparent: false,
-        alphaTest: 0.5,
+        transparent: true,
         depthWrite: false,
+        stencilFunc: THREE.EqualStencilFunc,
+        stencilRef: stencilRef,
+        stencilWrite: false,
       }),
-    [textureFront],
+    [textureFront, stencilRef],
   );
 
   const planeImgRef = useRef(planeImg);
   planeImgRef.current = planeImg;
-
   const wasAnimating = useRef(false);
 
   useFrame((_, delta) => {
     if (!colorMeshRef.current) return;
 
-    const gapUnit = viewport.width / totalCards;
-    const baseX = (index - mid) * gapUnit;
+    const vw = viewport.width;
+    const vh = viewport.height;
+    const portrait = vh > vw;
 
-    const targetX =
-      active === null || isActive
-        ? baseX
-        : baseX + (index < active ? -X_NUDGE : X_NUDGE);
+    let targetX: number;
+    let targetY = 0;
+    let targetW: number;
+    let targetH: number;
 
-    const targetY = isActive
-      ? 0
-      : hovered.current
-        ? -Y_DROP + HOVER_LIFT
-        : -Y_DROP;
+    if (portrait) {
+      targetW = vw;
+      targetH = vh;
 
-    const targetScale: [number, number, number] = isActive
-      ? [ACT_W, ACT_H, 1]
-      : [W, H, 1];
+      if (isActive) {
+        targetX = 0;
+      } else {
+        targetX = (index < activeIndex ? -1 : 1) * vw;
+      }
+    } else {
+      // Desktop: equal columns
+      const colW = vw / totalCards;
+      targetW = colW;
+      targetH = vh;
+      targetX = (index - mid) * colW;
+    }
 
     damp3(colorMeshRef.current.position, [targetX, targetY, 0], DAMP, delta);
-    damp3(colorMeshRef.current.scale, targetScale, DAMP, delta);
+    damp3(colorMeshRef.current.scale, [targetW, targetH, 1], DAMP, delta);
 
     dampC(
       cardMaterial.color,
@@ -159,15 +158,14 @@ const Card = ({
     );
 
     const pos = colorMeshRef.current.position;
+    const curScale = colorMeshRef.current.scale;
 
-    overlayBackRef.current?.position.set(pos.x, pos.y, -0.001);
-    overlayFrontRef.current?.position.set(pos.x, pos.y, 0.001);
-
-    overlayBackRef.current?.scale.set(overlayW, overlayH, 1);
-    overlayFrontRef.current?.scale.set(overlayW, overlayH, 1);
+    overlayBackRef.current?.position.set(pos.x, pos.y, 0);
+    overlayFrontRef.current?.position.set(pos.x, pos.y, 0);
+    overlayBackRef.current?.scale.set(curScale.x, curScale.y, 1);
+    overlayFrontRef.current?.scale.set(curScale.x, curScale.y, 1);
 
     const animating = isActive || hovered.current;
-
     if (animating && !wasAnimating.current) planeCanvas.reset();
     wasAnimating.current = animating;
 
@@ -181,7 +179,12 @@ const Card = ({
   const events = {
     onClick: (e: any) => {
       e.stopPropagation();
-      setActive(active === index ? null : index);
+      const portrait = viewport.height > viewport.width;
+      if (portrait) {
+        setActive(index);
+      } else {
+        setActive(active === index ? null : index);
+      }
     },
     onPointerOver: () => {
       hovered.current = true;
@@ -195,50 +198,50 @@ const Card = ({
 
   return (
     <>
-      <mesh ref={overlayBackRef} material={backMaterial} {...events}>
+      <mesh
+        ref={overlayBackRef}
+        material={backMaterial}
+        renderOrder={baseOrder}
+        {...events}
+      >
         <planeGeometry args={[1, 1]} />
       </mesh>
-
-      <mesh ref={colorMeshRef} material={cardMaterial} {...events}>
+      <mesh
+        ref={colorMeshRef}
+        material={cardMaterial}
+        renderOrder={baseOrder + 1}
+        {...events}
+      >
         <planeGeometry args={[1, 1]} />
-        <Text
-          position={[-0.45, -0.45, 0.01]} // bottom-left corner
-          fontSize={0.18}
-          font={"/fonts/CormorantGaramond-Regular.ttf"}
-          color={"#e4e4df"}
-          anchorX="left"
-          anchorY="bottom"
-        >
-          {index + 1}
-        </Text>
       </mesh>
-
-      <mesh ref={overlayFrontRef} material={frontMaterial} {...events}>
+      <mesh
+        ref={overlayFrontRef}
+        material={frontMaterial}
+        renderOrder={baseOrder + 2}
+        {...events}
+      >
         <planeGeometry args={[1, 1]} />
       </mesh>
     </>
   );
 };
 
-const Scene = ({ active, setActive, planeImg, isSquare }: any) => {
-  return (
-    <group>
-      <StencilClear />s
-      {CARDS.map((card, i) => (
-        <Card
-          key={i}
-          index={i}
-          active={active}
-          setActive={setActive}
-          color={card.color}
-          totalCards={CARDS.length}
-          planeImg={planeImg}
-          stencilRef={STENCIL_REFS[i]}
-          isSquare={isSquare}
-        />
-      ))}
-    </group>
-  );
-};
+const Scene = ({ active, setActive, planeImg }: any) => (
+  <group>
+    <StencilClear />
+    {CARDS.map((card, i) => (
+      <Card
+        key={i}
+        index={i}
+        active={active}
+        setActive={setActive}
+        color={card.color}
+        totalCards={CARDS.length}
+        planeImg={planeImg}
+        stencilRef={STENCIL_REFS[i]}
+      />
+    ))}
+  </group>
+);
 
 export default Scene;

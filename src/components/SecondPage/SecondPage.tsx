@@ -37,25 +37,88 @@ const AnimatedItem = ({
   </div>
 );
 
-const PROJECT_DESCRIPTIONS: Record<number, string> = {
-  0: "Description 1",
-  1: "Description 2",
-  2: "Description 3",
+const PROJECTS: { title: string; description: string }[] = [
+  { title: "Project one", description: "Description 1" },
+  { title: "Project two", description: "Description 2" },
+  { title: "Project three", description: "Description 3" },
+];
+
+interface OverlayProps {
+  inView: boolean;
+  active: number | null;
+  onViewProject: () => void;
+  isMobile: boolean;
+}
+
+const Overlay = ({ inView, active, onViewProject, isMobile }: OverlayProps) => {
+  const proj = active != null ? PROJECTS[active] : null;
+
+  return (
+    <div className="canvas-overlay">
+      <AnimatedItem inView={inView} delay={80} animationClass="fadeIn">
+        <p className="label overlay-label">Selected works</p>
+      </AnimatedItem>
+
+      <div className="overlay-bottom">
+        <div className="overlay-bottom-left">
+          <AnimatedItem inView={inView} delay={160} animationClass="fadeUp">
+            <p className="overlay-counter">
+              {active != null ? String(active + 1).padStart(2, "0") : "—"}
+              {" / "}
+              {String(PROJECTS.length).padStart(2, "0")}
+            </p>
+          </AnimatedItem>
+
+          <AnimatedItem inView={inView} delay={220} animationClass="fadeUp">
+            <h2 className="overlay-title">
+              {proj ? proj.title : "Things I've built"}
+            </h2>
+          </AnimatedItem>
+
+          <AnimatedItem inView={inView} delay={300} animationClass="fadeUp">
+            <p className="overlay-desc">
+              {proj
+                ? proj.description
+                : isMobile
+                  ? "Swipe to explore."
+                  : "Tap a card to see details."}
+            </p>
+          </AnimatedItem>
+
+          <AnimatedItem inView={inView} delay={380} animationClass="fadeUp">
+            <CTAButton
+              animationDelay={500}
+              style={{
+                width: "clamp(140px, 30vw, 220px)",
+                height: "clamp(44px, 6vh, 64px)",
+              }}
+              onClick={onViewProject}
+            >
+              View Project
+            </CTAButton>
+          </AnimatedItem>
+        </div>
+
+        <div className="overlay-dots">
+          {PROJECTS.map((_, i) => (
+            <span
+              key={i}
+              className={`overlay-dot${active === i ? " overlay-dot--active" : ""}`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 };
 
-const ProjectDescription = (active: number | null) =>
-  active != null ? PROJECT_DESCRIPTIONS[active] : "Tap a card to see details.";
-
-interface PageProps {
+interface MobilePageProps {
+  pageRef: React.RefObject<HTMLDivElement | null>;
   inView: boolean;
   active: number | null;
   setActive: (active: number | null) => void;
   projectView: boolean;
-  setProjectView: (active: boolean) => void;
-}
-
-interface MobilePageProps extends PageProps {
-  pageRef: React.RefObject<HTMLDivElement | null>;
+  setProjectView: (v: boolean) => void;
 }
 
 const MobilePage = ({
@@ -65,65 +128,32 @@ const MobilePage = ({
   setActive,
   projectView,
   setProjectView,
-}: MobilePageProps) => {
-  return (
-    <div ref={pageRef} className="second-page-mobile" id="second-page">
-      <Drawer
-        project={active}
-        active={projectView}
-        setIsActive={(view) => setProjectView(view)}
+}: MobilePageProps) => (
+  <div ref={pageRef} className="second-page-mobile" id="second-page">
+    <Drawer
+      project={active}
+      active={projectView}
+      setIsActive={(v) => setProjectView(v)}
+    />
+    <div className="canvas-frame">
+      <ProjectCards active={active} setActive={setActive} inView={inView} />
+      <Overlay
+        inView={inView}
+        active={active}
+        onViewProject={() => setProjectView(true)}
+        isMobile={true}
       />
-      {/* Header */}
-      <div className="mobile-header">
-        <AnimatedItem inView={inView} delay={80}>
-          <p className="label">Selected works</p>
-        </AnimatedItem>
-        <AnimatedItem inView={inView} delay={180}>
-          <h2 className="heading">Things I've built</h2>
-        </AnimatedItem>
-        <AnimatedItem
-          inView={inView}
-          delay={300}
-          animationClass="grow"
-          time={2}
-        >
-          <div className="secondary-divider" />
-        </AnimatedItem>
-      </div>
-
-      {/* Single canvas with all 3 cards */}
-      <AnimatedItem inView={inView} delay={0} animationClass="fadeIn">
-        <div className="mobile-cards-wrapper">
-          <ProjectCards
-            active={active}
-            setActive={setActive}
-            inView={inView}
-            isSquare={true}
-          />
-        </div>
-      </AnimatedItem>
-
-      {/* Description + CTA below cards */}
-      <div className="mobile-footer">
-        <AnimatedItem inView={inView} delay={180}>
-          <p className="description">{ProjectDescription(active)}</p>
-        </AnimatedItem>
-        <AnimatedItem inView={inView} delay={300}>
-          <CTAButton
-            animationDelay={500}
-            style={{
-              width: "clamp(160px, 40vw, 260px)",
-              height: "clamp(48px, 7vh, 80px)",
-            }}
-            onClick={() => setProjectView(true)}
-          >
-            View Project
-          </CTAButton>
-        </AnimatedItem>
-      </div>
     </div>
-  );
-};
+  </div>
+);
+
+interface DesktopPageProps {
+  inView: boolean;
+  active: number | null;
+  setActive: (active: number | null) => void;
+  projectView: boolean;
+  setProjectView: (v: boolean) => void;
+}
 
 const DesktopPage = ({
   inView,
@@ -131,117 +161,62 @@ const DesktopPage = ({
   setActive,
   projectView,
   setProjectView,
-}: PageProps) => {
-  return (
-    <div className="second-page" id="second-page">
-      <Drawer
-        project={active}
-        active={projectView}
-        setIsActive={(view) => setProjectView(view)}
-      />
-      <div
-        style={{
-          flex: "1 1 60%",
-          display: "flex",
-          justifyContent: "center",
-          alignContent: "center",
-          flexDirection: "column",
-          minHeight: 0,
-        }}
-      >
-        <div style={{ height: "100%", minHeight: 0 }}>
-          <AnimatedItem
-            inView={inView}
-            delay={0}
-            animationClass="fadeIn"
-            styles={{ height: "100%" }}
-          >
-            <ProjectCards
-              active={active}
-              setActive={setActive}
-              inView={inView}
-              isSquare={false}
-            />
-          </AnimatedItem>
-        </div>
-      </div>
-      <div
-        style={{
-          flex: "1 1 40%",
-          display: "flex",
-          height: "clamp(500px, 50vh, 800px)",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignSelf: "center",
-          minHeight: 0,
-          gap: "0",
-        }}
-      >
-        <AnimatedItem inView={inView} delay={80}>
-          <p className="label">Selected works</p>
-        </AnimatedItem>
-        <AnimatedItem inView={inView} delay={180}>
-          <h2 className="heading">Things I've built</h2>
-        </AnimatedItem>
-        <AnimatedItem
+}: DesktopPageProps) => (
+  <div className="second-page" id="second-page">
+    <Drawer
+      project={active}
+      active={projectView}
+      setIsActive={(v) => setProjectView(v)}
+    />
+    <AnimatedItem
+      inView={inView}
+      delay={0}
+      animationClass="fadeIn"
+      styles={{ width: "100%", height: "100%" }}
+    >
+      <div className="canvas-frame">
+        <ProjectCards active={active} setActive={setActive} inView={inView} />
+        <Overlay
           inView={inView}
-          delay={300}
-          animationClass="grow"
-          time={2}
-        >
-          <div className="secondary-divider" />
-        </AnimatedItem>
-        <AnimatedItem inView={inView} delay={180}>
-          <p className="description">{ProjectDescription(active)}</p>
-        </AnimatedItem>
-        <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
-          <AnimatedItem inView={inView} delay={0}>
-            <CTAButton
-              animationDelay={500}
-              style={{
-                width: "clamp(160px, 40vw, 260px)",
-                height: "clamp(48px, 7vh, 80px)",
-              }}
-              onClick={() => setProjectView(true)}
-            >
-              View Project
-            </CTAButton>
-          </AnimatedItem>
-        </div>
+          active={active}
+          onViewProject={() => setProjectView(true)}
+          isMobile={false}
+        />
       </div>
-    </div>
-  );
-};
+    </AnimatedItem>
+  </div>
+);
 
 const SecondPage = () => {
   const { ref, inView } = useInView(0.1);
-  const [active, setActive] = useState<number | null>(1);
   const { isMobile } = useWindowSize();
+  const [active, setActive] = useState<number | null>(isMobile ? 0 : 1);
   const [projectView, setProjectView] = useState<boolean>(false);
 
-  return (
-    <>
-      <div ref={ref}>
-        {isMobile ? (
-          <MobilePage
-            pageRef={ref}
-            inView={inView}
-            active={active}
-            setActive={setActive}
-            projectView={projectView}
-            setProjectView={setProjectView}
-          />
-        ) : (
-          <DesktopPage
-            inView={inView}
-            active={active}
-            setActive={setActive}
-            projectView={projectView}
-            setProjectView={(page) => setProjectView(page)}
-          />
-        )}
-      </div>
-    </>
+  const handleSetActive = (next: number | null) => {
+    if (isMobile && next === null) return;
+    setActive(next);
+  };
+
+  return isMobile ? (
+    <MobilePage
+      pageRef={ref}
+      inView={inView}
+      active={active}
+      setActive={handleSetActive}
+      projectView={projectView}
+      setProjectView={setProjectView}
+    />
+  ) : (
+    <div ref={ref}>
+      <DesktopPage
+        inView={inView}
+        active={active}
+        setActive={setActive}
+        projectView={projectView}
+        setProjectView={setProjectView}
+      />
+    </div>
   );
 };
 
