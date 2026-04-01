@@ -6,22 +6,11 @@ import { createPlaneCanvas } from "./planeCanvas";
 
 const DAMP = 0.12;
 
-const STENCIL_REFS = [1, 2, 3];
-
 const CARDS = [
   { color: "#8d80a0" },
   { color: "#a4af94" },
   { color: "#c585a6" },
 ];
-
-const StencilClear = () => {
-  const { gl } = useThree();
-  useFrame(() => {
-    const glCtx = gl.getContext() as WebGL2RenderingContext;
-    glCtx.clear(glCtx.STENCIL_BUFFER_BIT);
-  }, -1);
-  return null;
-};
 
 const Card = ({
   index,
@@ -30,11 +19,9 @@ const Card = ({
   color,
   totalCards,
   planeImg,
-  stencilRef,
 }: any) => {
-  const colorMeshRef = useRef<THREE.Mesh>(null);
-  const overlayFrontRef = useRef<THREE.Mesh>(null);
-  const overlayBackRef = useRef<THREE.Mesh>(null);
+  const cardRef = useRef<THREE.Mesh>(null);
+  const planeOverlayRef = useRef<THREE.Mesh>(null);
   const hovered = useRef(false);
   const { viewport } = useThree();
 
@@ -63,13 +50,11 @@ const Card = ({
     return new THREE.Color().setHSL(hsl.h, hsl.s * 0.15, hsl.l * 0.35);
   }, [color]);
 
-  const { planeCanvas, textureFront, textureBack } = useMemo(() => {
+  const { planeCanvas, textureFront } = useMemo(() => {
     const pc = createPlaneCanvas(cardAspect);
     const tf = new THREE.CanvasTexture(pc.canvasFront);
-    const tb = new THREE.CanvasTexture(pc.canvasBack);
-    tf.colorSpace = tb.colorSpace = THREE.SRGBColorSpace;
-    tf.minFilter = tb.minFilter = THREE.LinearFilter;
-    return { planeCanvas: pc, textureFront: tf, textureBack: tb };
+    tf.colorSpace = THREE.SRGBColorSpace;
+    return { planeCanvas: pc, textureFront: tf };
   }, [cardAspect]);
 
   const baseOrder = index * 3;
@@ -79,25 +64,8 @@ const Card = ({
       new THREE.MeshBasicMaterial({
         color: idleColor,
         toneMapped: false,
-        stencilWrite: true,
-        stencilFunc: THREE.AlwaysStencilFunc,
-        stencilZPass: THREE.ReplaceStencilOp,
-        stencilRef: stencilRef,
       }),
-    [idleColor, stencilRef],
-  );
-
-  const backMaterial = useMemo(
-    () =>
-      new THREE.MeshBasicMaterial({
-        map: textureBack,
-        toneMapped: false,
-        transparent: true,
-        depthWrite: false,
-        stencilFunc: THREE.NotEqualStencilFunc,
-        stencilRef: stencilRef,
-      }),
-    [textureBack, stencilRef],
+    [idleColor],
   );
 
   const frontMaterial = useMemo(
@@ -106,12 +74,8 @@ const Card = ({
         map: textureFront,
         toneMapped: false,
         transparent: true,
-        depthWrite: false,
-        stencilFunc: THREE.EqualStencilFunc,
-        stencilRef: stencilRef,
-        stencilWrite: false,
       }),
-    [textureFront, stencilRef],
+    [textureFront],
   );
 
   const planeImgRef = useRef(planeImg);
@@ -119,7 +83,7 @@ const Card = ({
   const wasAnimating = useRef(false);
 
   useFrame((_, delta) => {
-    if (!colorMeshRef.current) return;
+    if (!cardRef.current) return;
 
     const vw = viewport.width;
     const vh = viewport.height;
@@ -147,8 +111,8 @@ const Card = ({
       targetX = (index - mid) * colW;
     }
 
-    damp3(colorMeshRef.current.position, [targetX, targetY, 0], DAMP, delta);
-    damp3(colorMeshRef.current.scale, [targetW, targetH, 1], DAMP, delta);
+    damp3(cardRef.current.position, [targetX, targetY, 0], DAMP, delta);
+    damp3(cardRef.current.scale, [targetW, targetH, 1], DAMP, delta);
 
     dampC(
       cardMaterial.color,
@@ -157,13 +121,11 @@ const Card = ({
       delta,
     );
 
-    const pos = colorMeshRef.current.position;
-    const curScale = colorMeshRef.current.scale;
+    const pos = cardRef.current.position;
+    const curScale = cardRef.current.scale;
 
-    overlayBackRef.current?.position.set(pos.x, pos.y, 0);
-    overlayFrontRef.current?.position.set(pos.x, pos.y, 0);
-    overlayBackRef.current?.scale.set(curScale.x, curScale.y, 1);
-    overlayFrontRef.current?.scale.set(curScale.x, curScale.y, 1);
+    planeOverlayRef.current?.position.set(pos.x, pos.y, 0);
+    planeOverlayRef.current?.scale.set(curScale.x, curScale.y, 1);
 
     const animating = isActive || hovered.current;
     if (animating && !wasAnimating.current) planeCanvas.reset();
@@ -173,7 +135,6 @@ const Card = ({
     planeCanvas.draw(animating, planeImgRef.current);
 
     textureFront.needsUpdate = true;
-    textureBack.needsUpdate = true;
   });
 
   const events = {
@@ -199,15 +160,7 @@ const Card = ({
   return (
     <>
       <mesh
-        ref={overlayBackRef}
-        material={backMaterial}
-        renderOrder={baseOrder}
-        {...events}
-      >
-        <planeGeometry args={[1, 1]} />
-      </mesh>
-      <mesh
-        ref={colorMeshRef}
+        ref={cardRef}
         material={cardMaterial}
         renderOrder={baseOrder + 1}
         {...events}
@@ -215,7 +168,7 @@ const Card = ({
         <planeGeometry args={[1, 1]} />
       </mesh>
       <mesh
-        ref={overlayFrontRef}
+        ref={planeOverlayRef}
         material={frontMaterial}
         renderOrder={baseOrder + 2}
         {...events}
@@ -228,7 +181,6 @@ const Card = ({
 
 const Scene = ({ active, setActive, planeImg }: any) => (
   <group>
-    <StencilClear />
     {CARDS.map((card, i) => (
       <Card
         key={i}
@@ -238,7 +190,6 @@ const Scene = ({ active, setActive, planeImg }: any) => (
         color={card.color}
         totalCards={CARDS.length}
         planeImg={planeImg}
-        stencilRef={STENCIL_REFS[i]}
       />
     ))}
   </group>

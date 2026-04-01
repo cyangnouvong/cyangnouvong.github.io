@@ -23,30 +23,23 @@ function spiralPos(t: number) {
   };
 }
 
-function isFrontPass(t: number): boolean {
-  return spiralPos(t + 0.001).x > spiralPos(t).x;
-}
-
 export function createPlaneCanvas(overlayAspect: number) {
   const H = 1024;
   const W = Math.round(Math.max(256, Math.min(H * overlayAspect, H * 2)));
 
-  const PLANE_SIZE_FRONT = H * 0.055;
-  const PLANE_SIZE_BACK = H * 0.043;
+  const PLANE_SIZE = H * 0.055;
   const TRAIL_RADIUS_MIN = H * 0.0012;
   const TRAIL_RADIUS_MAX = H * 0.004;
 
   const canvasFront = document.createElement("canvas");
-  const canvasBack = document.createElement("canvas");
 
-  canvasFront.width = canvasBack.width = W;
-  canvasFront.height = canvasBack.height = H;
+  canvasFront.width = W;
+  canvasFront.height = H;
 
   const ctxF = canvasFront.getContext("2d", { alpha: true })!;
-  const ctxB = canvasBack.getContext("2d", { alpha: true })!;
 
   const state = { t: 0, angle: 0 };
-  const trail: { x: number; y: number; front: boolean }[] = [];
+  const trail: { x: number; y: number }[] = [];
 
   function update(active: boolean) {
     if (!active) return;
@@ -61,13 +54,12 @@ export function createPlaneCanvas(overlayAspect: number) {
     const dy = (ahead.y - pos.y) * H;
     state.angle = Math.atan2(dy, dx);
 
-    trail.push({ x: pos.x, y: pos.y, front: isFrontPass(state.t) });
+    trail.push({ x: pos.x, y: pos.y });
     if (trail.length > TRAIL_MAX) trail.shift();
   }
 
   function drawLayer(
     ctx: CanvasRenderingContext2D,
-    isFrontLayer: boolean,
     active: boolean,
     planeImg: HTMLImageElement | null,
   ) {
@@ -75,11 +67,8 @@ export function createPlaneCanvas(overlayAspect: number) {
     if (!active || trail.length < 2) return;
 
     for (let i = 1; i < trail.length; i++) {
-      if (trail[i].front !== isFrontLayer) continue;
-      if (i % 2 !== 0) continue;
-
       const frac = i / trail.length;
-      const alpha = Math.pow(frac, 1.8) * (isFrontLayer ? 0.9 : 0.5);
+      const alpha = Math.pow(frac, 1.8) * 0.9;
       const radius =
         TRAIL_RADIUS_MIN + frac * (TRAIL_RADIUS_MAX - TRAIL_RADIUS_MIN);
 
@@ -89,12 +78,10 @@ export function createPlaneCanvas(overlayAspect: number) {
       ctx.fill();
     }
 
-    if (isFrontPass(state.t) !== isFrontLayer) return;
-
     const pos = spiralPos(state.t);
     const px = pos.x * W;
     const py = pos.y * H;
-    const size = isFrontLayer ? PLANE_SIZE_FRONT : PLANE_SIZE_BACK;
+    const size = PLANE_SIZE;
     const half = size / 2;
 
     ctx.save();
@@ -116,8 +103,7 @@ export function createPlaneCanvas(overlayAspect: number) {
   }
 
   function draw(active: boolean, planeImg: HTMLImageElement | null) {
-    drawLayer(ctxF, true, active, planeImg);
-    drawLayer(ctxB, false, active, planeImg);
+    drawLayer(ctxF, active, planeImg);
   }
 
   function reset() {
@@ -125,5 +111,5 @@ export function createPlaneCanvas(overlayAspect: number) {
     state.t = 0;
   }
 
-  return { canvasFront, canvasBack, update, draw, reset };
+  return { canvasFront, update, draw, reset };
 }
