@@ -7,14 +7,6 @@
   overflow-x: hidden;
 }
 
-.home-scene {
-  position: sticky;
-  top: 0;
-  width: 100%;
-  height: 100vh;
-  margin-bottom: -100vh;
-}
-
 .ui-layer {
   position: absolute; /* float over Scene */
   top: 0;
@@ -27,15 +19,4 @@
 .ui-layer button,
 .ui-layer a {
   pointer-events: auto;
-}
-
-.transition-effect {
-  position: absolute;
-  width: 100%;
-  height: 200px;
-  margin-bottom: -100px;
-  bottom: 0;
-  z-index: 5;
-  background: linear-gradient(180deg, transparent 0%, var(--bg) 50%);
-  z-index: 0;
 }
