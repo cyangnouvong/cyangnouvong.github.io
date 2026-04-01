@@ -12,14 +12,23 @@ const CARDS = [
   { color: "#c585a6" },
 ];
 
+interface CardProps {
+  index: number;
+  active: number | null;
+  setActive: (active: number | null) => void;
+  color: string;
+  totalCards: number;
+  planeImgs: [HTMLImageElement, HTMLImageElement] | null;
+}
+
 const Card = ({
   index,
   active,
   setActive,
   color,
   totalCards,
-  planeImg,
-}: any) => {
+  planeImgs,
+}: CardProps) => {
   const cardRef = useRef<THREE.Mesh>(null);
   const planeOverlayRef = useRef<THREE.Mesh>(null);
   const hovered = useRef(false);
@@ -78,8 +87,8 @@ const Card = ({
     [textureFront],
   );
 
-  const planeImgRef = useRef(planeImg);
-  planeImgRef.current = planeImg;
+  const planeImgRef = useRef(planeImgs);
+  planeImgRef.current = planeImgs;
   const wasAnimating = useRef(false);
 
   useFrame((_, delta) => {
@@ -132,7 +141,8 @@ const Card = ({
     wasAnimating.current = animating;
 
     planeCanvas.update(animating);
-    planeCanvas.draw(animating, planeImgRef.current);
+    const imgs = planeImgRef.current;
+    planeCanvas.draw(animating, imgs?.[0] ?? null, imgs?.[1] ?? null);
 
     textureFront.needsUpdate = true;
   });
@@ -179,7 +189,13 @@ const Card = ({
   );
 };
 
-const Scene = ({ active, setActive, planeImg }: any) => (
+interface SceneProps {
+  active: number | null;
+  setActive: (active: number | null) => void;
+  planeImgs: [HTMLImageElement, HTMLImageElement] | null;
+}
+
+const Scene = ({ active, setActive, planeImgs }: SceneProps) => (
   <group>
     {CARDS.map((card, i) => (
       <Card
@@ -189,7 +205,7 @@ const Scene = ({ active, setActive, planeImg }: any) => (
         setActive={setActive}
         color={card.color}
         totalCards={CARDS.length}
-        planeImg={planeImg}
+        planeImgs={planeImgs}
       />
     ))}
   </group>

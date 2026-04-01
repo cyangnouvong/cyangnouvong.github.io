@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import Scene from "./CardScene";
-import { loadPlaneImage } from "./planeCanvas";
+import { loadPlaneImages } from "./planeCanvas";
 import { useTheme } from "../../context/ThemeContext";
 
 const TOTAL_CARDS = 3;
@@ -14,11 +14,13 @@ interface ProjectCardsProps {
 }
 
 const ProjectCards = ({ active, setActive, inView }: ProjectCardsProps) => {
-  const [planeImg, setPlaneImg] = useState<HTMLImageElement | null>(null);
+  const [planeImgs, setPlaneImgs] = useState<
+    [HTMLImageElement, HTMLImageElement] | null
+  >(null);
   const { mode } = useTheme();
 
   useEffect(() => {
-    loadPlaneImage(mode).then(setPlaneImg);
+    loadPlaneImages(mode).then(setPlaneImgs);
   }, [mode]);
 
   // Swipe detection
@@ -63,7 +65,7 @@ const ProjectCards = ({ active, setActive, inView }: ProjectCardsProps) => {
         onPointerMissed={() => setActive(null)}
         frameloop={inView ? "always" : "never"}
       >
-        <Scene active={active} setActive={setActive} planeImg={planeImg} />
+        <Scene active={active} setActive={setActive} planeImgs={planeImgs} />
       </Canvas>
     </div>
   );
