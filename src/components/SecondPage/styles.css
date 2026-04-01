@@ -12,7 +12,7 @@
 .second-page-mobile {
   position: relative;
   width: 100%;
-  min-height: calc(100vh - var(--margin-y) * 2);
+  min-height: calc(100dvh - var(--margin-y) * 2);
   margin-top: 100px;
   background: var(--bg);
   display: flex;
@@ -29,6 +29,10 @@
   border-radius: clamp(8px, 1.5vw, 16px);
   overflow: hidden;
   background: #111;
+
+  @media (max-width: 768px) {
+    border-radius: 0;
+  }
 }
 
 .second-page-mobile .canvas-frame {

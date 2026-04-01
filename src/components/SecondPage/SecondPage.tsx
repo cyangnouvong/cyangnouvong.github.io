@@ -89,8 +89,8 @@ const Overlay = ({ inView, active, onViewProject, isMobile }: OverlayProps) => {
             <CTAButton
               animationDelay={500}
               style={{
-                width: "clamp(140px, 30vw, 220px)",
-                height: "clamp(44px, 6vh, 64px)",
+                width: "clamp(180px, 30vw, 220px)",
+                height: "clamp(50px, 6vh, 64px)",
               }}
               onClick={onViewProject}
             >
