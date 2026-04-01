@@ -32,7 +32,7 @@ const Card = ({
   const cardRef = useRef<THREE.Mesh>(null);
   const planeOverlayRef = useRef<THREE.Mesh>(null);
   const hovered = useRef(false);
-  const { viewport } = useThree();
+  const { viewport, gl } = useThree();
 
   const activeIndex = active ?? 0;
   const isActive = active === index;
@@ -44,6 +44,9 @@ const Card = ({
       ? viewport.width / viewport.height
       : viewport.width / totalCards / viewport.height;
   }, [viewport.width, viewport.height, totalCards]);
+
+  // Read DPR from the renderer so the canvas matches the display
+  const dpr = useMemo(() => gl.getPixelRatio(), [gl]);
 
   const fullColor = useMemo(() => new THREE.Color(color), [color]);
   const hoverColor = useMemo(() => {
@@ -60,11 +63,16 @@ const Card = ({
   }, [color]);
 
   const { planeCanvas, textureFront } = useMemo(() => {
-    const pc = createPlaneCanvas(cardAspect);
+    const pc = createPlaneCanvas(cardAspect, dpr);
     const tf = new THREE.CanvasTexture(pc.canvasFront);
     tf.colorSpace = THREE.SRGBColorSpace;
+    // Prevent Three.js from generating mipmaps for a canvas texture —
+    // mipmaps are regenerated every needsUpdate which is very slow on mobile
+    tf.generateMipmaps = false;
+    tf.minFilter = THREE.LinearFilter;
+    tf.magFilter = THREE.LinearFilter;
     return { planeCanvas: pc, textureFront: tf };
-  }, [cardAspect]);
+  }, [cardAspect, dpr]);
 
   const baseOrder = index * 3;
 
@@ -113,7 +121,6 @@ const Card = ({
         targetX = (index < activeIndex ? -1 : 1) * vw;
       }
     } else {
-      // Desktop: equal columns
       const colW = vw / totalCards;
       targetW = colW;
       targetH = vh;
@@ -142,9 +149,15 @@ const Card = ({
 
     planeCanvas.update(animating);
     const imgs = planeImgRef.current;
-    planeCanvas.draw(animating, imgs?.[0] ?? null, imgs?.[1] ?? null);
 
-    textureFront.needsUpdate = true;
+    // draw() returns true only when the canvas actually changed;
+    // skip the GPU texture upload on idle frames to save mobile bandwidth
+    const canvasChanged = planeCanvas.draw(
+      animating,
+      imgs?.[0] ?? null,
+      imgs?.[1] ?? null,
+    );
+    if (canvasChanged) textureFront.needsUpdate = true;
   });
 
   const events = {

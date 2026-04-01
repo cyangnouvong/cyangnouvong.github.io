@@ -7,6 +7,10 @@ import { useTheme } from "../../context/ThemeContext";
 const TOTAL_CARDS = 3;
 const SWIPE_THRESHOLD = 40; // px
 
+// Cap DPR passed to the Canvas renderer. 3× screens (some Android flagships)
+// render 9× as many fragments for zero visible benefit; 2 is a good ceiling.
+const MAX_DPR: [number, number] = [1, 2];
+
 interface ProjectCardsProps {
   active: number | null;
   setActive: (active: number | null) => void;
@@ -61,6 +65,9 @@ const ProjectCards = ({ active, setActive, inView }: ProjectCardsProps) => {
         orthographic
         camera={{ position: [0, 0, 10], zoom: 100 }}
         gl={{ antialias: true, stencil: true, premultipliedAlpha: false }}
+        // Tell Three.js to render at the actual device pixel ratio (capped at 2×)
+        // Without this the WebGL backbuffer is 1× and gets upscaled — blurry on HiDPI
+        dpr={MAX_DPR}
         style={{ width: "100%", height: "100%" }}
         onPointerMissed={() => setActive(null)}
         frameloop={inView ? "always" : "never"}
