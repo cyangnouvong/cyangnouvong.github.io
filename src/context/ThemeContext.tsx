@@ -9,7 +9,6 @@ const themes = {
     "--ink-mid": "#54533a",
     "--ink-muted": "#8a8a7c",
     "--ink-faint": "#aaaaa0",
-    "--drawer-bg": "rgba(197, 197, 190, 0.7)",
   },
   Dark: {
     "--bg": "#1a1a17",
@@ -17,7 +16,6 @@ const themes = {
     "--ink-mid": "#a8a899",
     "--ink-muted": "#6b6b5e",
     "--ink-faint": "#4a4a40",
-    "--drawer-bg": "rgba(20, 20, 17, 0.7)",
   },
 };
 
@@ -37,13 +35,13 @@ const ThemeContext = createContext<ThemeContextType | null>(null);
 
 function getPreferredMode(): Mode {
   const stored = localStorage.getItem("theme") as Mode | null;
+  console.log("stored:", stored);
   if (stored) {
     return stored;
   }
 
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "Dark"
-    : "Light";
+  const mediaDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return mediaDark ? "Dark" : "Light";
 }
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {

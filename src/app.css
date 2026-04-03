@@ -20,3 +20,28 @@
 .ui-layer a {
   pointer-events: auto;
 }
+
+.see-work-button {
+  position: absolute;
+  top: calc(50% - clamp(60px, 8vh, 120px) / 2);
+  left: clamp(40px, 10vw, 300px);
+  width: clamp(200px, 15vw, 320px);
+  height: clamp(60px, 8vh, 120px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.see-work--mobile {
+  top: calc(90% - clamp(60px, 8vh, 120px) / 2);
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -12,6 +12,7 @@
     "deploy": "npm run build && gh-pages -d dist --dotfiles"
   },
   "dependencies": {
+    "@cyangnouvong/dao-ui": "github:cyangnouvong/dao-ui",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "react": "^19.2.4",

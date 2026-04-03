@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useWindowSize } from "../../utils/useWindowSize";
+import { Button, DotIndicator, Text } from "@cyangnouvong/dao-ui";
+
 import useInView from "../../utils/useInView";
 import ProjectCards from "../ProjectCards/ProjectCards";
+
 import "./styles.css";
-import CTAButton from "../CTAButton/CTAButton";
-import { useWindowSize } from "../../utils/useWindowSize";
 
 interface AnimatedItemProps {
   children: React.ReactNode;
@@ -23,7 +25,6 @@ const AnimatedItem = ({
   styles = {},
 }: AnimatedItemProps) => (
   <div
-    key={inView ? "in" : "out"}
     style={{
       opacity: 0,
       animation: inView
@@ -38,7 +39,7 @@ const AnimatedItem = ({
 
 const PROJECTS: { title: string; description: string }[] = [
   { title: "Project one", description: "Description 1" },
-  { title: "Project two", description: "Description 2" },
+  { title: "Design System", description: "Description 2" },
   { title: "Project three", description: "Description 3" },
 ];
 
@@ -55,67 +56,78 @@ const Overlay = ({ inView, active, setActive, isPortrait }: OverlayProps) => {
   return (
     <div className="canvas-overlay">
       <AnimatedItem inView={inView} delay={80} animationClass="fadeIn">
-        <p className="label overlay-label">Selected works</p>
+        <Text
+          font="ui"
+          size="xs"
+          tracking="wide"
+          style={{
+            color: "rgba(228, 228, 223, 0.4)",
+            textTransform: "uppercase",
+          }}
+        >
+          Selected works
+        </Text>
       </AnimatedItem>
 
       <div className="overlay-bottom">
         <div className="overlay-bottom-left">
           <AnimatedItem inView={inView} delay={160} animationClass="fadeUp">
-            <p className="overlay-counter">
+            <Text
+              font="ui"
+              size="xs"
+              tracking="wide"
+              style={{ color: "rgba(228, 228, 223, 0.4)" }}
+            >
               {active != null ? String(active + 1).padStart(2, "0") : "—"}
               {" / "}
               {String(PROJECTS.length).padStart(2, "0")}
-            </p>
+            </Text>
           </AnimatedItem>
 
           <AnimatedItem inView={inView} delay={220} animationClass="fadeUp">
-            <h2 className="overlay-title">
+            <Text font="display" size="xxl" style={{ color: "#e4e4df" }}>
               {proj ? proj.title : "Things I've built"}
-            </h2>
+            </Text>
           </AnimatedItem>
 
           <AnimatedItem inView={inView} delay={300} animationClass="fadeUp">
-            <p className="overlay-desc">
+            <Text
+              font="ui"
+              size="base"
+              style={{
+                lineHeight: "1.55",
+                margin: "0 0 0.75rem",
+                color: "rgba(228, 228, 223, 0.6)",
+              }}
+            >
               {proj
                 ? proj.description
                 : isPortrait
                   ? "Swipe to explore."
                   : "Tap a card to see details."}
-            </p>
+            </Text>
           </AnimatedItem>
 
           <AnimatedItem inView={inView} delay={380} animationClass="fadeUp">
-            <CTAButton
-              animationDelay={500}
+            <div
               style={{
                 width: "clamp(180px, 30vw, 220px)",
                 height: "clamp(50px, 6vh, 64px)",
               }}
-              onClick={
-                () =>
-                  console.log("View project") /* TODO: implement project view */
-              }
             >
-              View Project
-            </CTAButton>
+              <Button variant="emphasis" showArrow={true} size={"sm"}>
+                View project
+              </Button>
+            </div>
           </AnimatedItem>
         </div>
-
-        <div className={"overlay-right"}>
-          <div className="overlay-dots">
-            {PROJECTS.map((_, i) => (
-              <button
-                key={i}
-                className={`overlay-dot${active === i ? " overlay-dot--active" : ""}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActive(i);
-                }}
-                aria-label={`View ${PROJECTS[i].title}`}
-                aria-pressed={active === i}
-              />
-            ))}
-          </div>
+        <div onClick={(e) => e.stopPropagation()}>
+          <DotIndicator
+            count={PROJECTS.length}
+            active={active}
+            direction={isPortrait ? "horizontal" : "vertical"}
+            onChange={(i) => setActive(i)}
+          />
         </div>
       </div>
     </div>
@@ -127,8 +139,6 @@ interface MobilePageProps {
   inView: boolean;
   active: number | null;
   setActive: (active: number | null) => void;
-  projectView: boolean;
-  setProjectView: (v: boolean) => void;
   isPortrait: boolean;
   handleClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
@@ -158,8 +168,6 @@ interface DesktopPageProps {
   inView: boolean;
   active: number | null;
   setActive: (active: number | null) => void;
-  projectView: boolean;
-  setProjectView: (v: boolean) => void;
   isPortrait: boolean;
 }
 
@@ -194,7 +202,6 @@ const SecondPage = () => {
   const { isMobile, width, height } = useWindowSize();
   const isPortrait = height > width;
   const [active, setActive] = useState<number | null>(isPortrait ? 0 : 1);
-  const [projectView, setProjectView] = useState<boolean>(false);
 
   const handleSetActive = (next: number | null) => {
     if (isMobile && next === null) return;
@@ -226,8 +233,6 @@ const SecondPage = () => {
       inView={inView}
       active={active}
       setActive={handleSetActive}
-      projectView={projectView}
-      setProjectView={setProjectView}
       isPortrait={isPortrait}
       handleClick={handleMobileClick}
     />
@@ -237,8 +242,6 @@ const SecondPage = () => {
         inView={inView}
         active={active}
         setActive={setActive}
-        projectView={projectView}
-        setProjectView={setProjectView}
         isPortrait={isPortrait}
       />
     </div>

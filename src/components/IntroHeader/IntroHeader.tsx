@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Text } from "@cyangnouvong/dao-ui";
 import "./styles.css";
 
 const IntroHeader = ({ revealAfterMs = 0 }: { revealAfterMs?: number }) => {
@@ -23,11 +24,10 @@ const IntroHeader = ({ revealAfterMs = 0 }: { revealAfterMs?: number }) => {
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <div
+          <Text
+            font="display"
+            size="xl"
             style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "var(--text-xl)",
-              color: "var(--ink)",
               clipPath: "inset(100% 0 0 0)",
               opacity: 0,
               animation: mounted
@@ -36,14 +36,13 @@ const IntroHeader = ({ revealAfterMs = 0 }: { revealAfterMs?: number }) => {
             }}
           >
             Chelsea Yangnouvong
-          </div>
-
-          <div
+          </Text>
+          <Text
+            font="display"
+            color="ink-muted"
+            size="base"
+            tracking="wider"
             style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "var(--text-base)",
-              color: "var(--ink-muted)",
-              letterSpacing: "0.3em",
               textTransform: "uppercase",
               opacity: 0,
               animation: mounted
@@ -51,8 +50,8 @@ const IntroHeader = ({ revealAfterMs = 0 }: { revealAfterMs?: number }) => {
                 : "none",
             }}
           >
-            Full Stack Developer &amp; Designer
-          </div>
+            Full Stack Developer & Designer
+          </Text>
         </div>
       </div>
     </>
