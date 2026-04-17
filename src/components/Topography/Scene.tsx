@@ -1,8 +1,8 @@
 import { Canvas } from "@react-three/fiber";
 import HeightMap from "./HeightMap";
-import { useTheme } from "../context/ThemeContext";
-import { themes } from "../utils/themes";
-import { useWindowSize } from "../utils/useWindowSize";
+import { useTheme } from "../../context/ThemeContext";
+import { themes } from "../../utils/themes";
+import { useWindowSize } from "../../utils/useWindowSize";
 
 const frustum = 100;
 

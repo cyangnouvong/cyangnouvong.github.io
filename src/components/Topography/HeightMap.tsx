@@ -1,12 +1,12 @@
 import { useRef, useState, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { SWEEP_VERT, SWEEP_FRAG } from "../utils/shaders";
-import { generateHeightMap } from "../utils/noise";
-import { marchingSquares, type Segment } from "../utils/marchingSquares";
-import { useTheme } from "../context/ThemeContext";
-import { themes } from "../utils/themes";
-import { useWindowSize } from "../utils/useWindowSize";
+import { SWEEP_VERT, SWEEP_FRAG } from "../../utils/shaders";
+import { generateHeightMap } from "../../utils/noise";
+import { marchingSquares, type Segment } from "../../utils/marchingSquares";
+import { useTheme } from "../../context/ThemeContext";
+import { themes } from "../../utils/themes";
+import { useWindowSize } from "../../utils/useWindowSize";
 
 const CONTOUR_LEVELS = 30;
 const GRID_SIZE = 256;
