@@ -38,7 +38,7 @@ const LogoReveal = ({ onComplete }: { onComplete?: () => void }) => {
           ...(isMobile
             ? {
                 top: "33%",
-                right: "clamp(40px, 10vw, 300px)",
+                right: "calc(50% - clamp(200px, 60vw, 280px) / 2)",
               }
             : {
                 top: "50%",

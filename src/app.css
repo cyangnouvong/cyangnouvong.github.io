@@ -33,6 +33,7 @@
 
 .see-work--mobile {
   top: calc(90% - clamp(60px, 8vh, 120px) / 2);
+  left: calc(50% - clamp(200px, 15vw, 320px) / 2);
 }
 
 @keyframes fadeUp {
