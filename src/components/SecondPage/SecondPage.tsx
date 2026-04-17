@@ -5,6 +5,8 @@ import { Button, DotIndicator, Text } from "@cyangnouvong/dao-ui";
 import useInView from "../../utils/useInView";
 import ProjectCards from "../ProjectCards/ProjectCards";
 
+import Projects from "../Projects/Projects";
+
 import "./styles.css";
 
 interface AnimatedItemProps {
@@ -37,12 +39,6 @@ const AnimatedItem = ({
   </div>
 );
 
-const PROJECTS: { title: string; description: string }[] = [
-  { title: "Project one", description: "Description 1" },
-  { title: "Design System", description: "Description 2" },
-  { title: "Project three", description: "Description 3" },
-];
-
 interface OverlayProps {
   inView: boolean;
   active: number | null;
@@ -51,7 +47,8 @@ interface OverlayProps {
 }
 
 const Overlay = ({ inView, active, setActive, isPortrait }: OverlayProps) => {
-  const proj = active != null ? PROJECTS[active] : null;
+  const projectsArray = Projects();
+  const proj = active != null ? projectsArray[active] : null;
 
   return (
     <div className="canvas-overlay">
@@ -80,7 +77,7 @@ const Overlay = ({ inView, active, setActive, isPortrait }: OverlayProps) => {
             >
               {active != null ? String(active + 1).padStart(2, "0") : "—"}
               {" / "}
-              {String(PROJECTS.length).padStart(2, "0")}
+              {String(projectsArray.length).padStart(2, "0")}
             </Text>
           </AnimatedItem>
 
@@ -123,7 +120,7 @@ const Overlay = ({ inView, active, setActive, isPortrait }: OverlayProps) => {
         </div>
         <div onClick={(e) => e.stopPropagation()}>
           <DotIndicator
-            count={PROJECTS.length}
+            count={projectsArray.length}
             active={active}
             direction={isPortrait ? "horizontal" : "vertical"}
             onChange={(i) => setActive(i)}
@@ -202,6 +199,7 @@ const SecondPage = () => {
   const { isMobile, width, height } = useWindowSize();
   const isPortrait = height > width;
   const [active, setActive] = useState<number | null>(isPortrait ? 0 : 1);
+  const projectsArray = Projects();
 
   const handleSetActive = (next: number | null) => {
     if (isMobile && next === null) return;
@@ -222,7 +220,7 @@ const SecondPage = () => {
     } else {
       setActive((prev) => {
         if (prev === null) return 0;
-        return prev < PROJECTS.length - 1 ? prev + 1 : prev;
+        return prev < projectsArray.length - 1 ? prev + 1 : prev;
       });
     }
   };
