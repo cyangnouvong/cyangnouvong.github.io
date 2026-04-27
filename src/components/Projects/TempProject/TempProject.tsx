@@ -1,26 +1,11 @@
-import { useEffect } from "react";
-import type { Project } from "../Projects";
-
-interface TempProjectProps {
-  projects: Project[];
-  setProjects: (projects: Project[]) => void;
-}
-const TempProject = ({ projects, setProjects }: TempProjectProps) => {
-  useEffect(() => {
-    if (projects.some((p) => p.title === "Temp Project")) return;
-    setProjects([
-      ...projects,
-      {
-        title: "Temp Project",
-        description: "A temporary project for testing purposes.",
-      },
-    ]);
-  }, [projects, setProjects]);
-
+const TempProject = () => {
   return (
-    <>
-      <></>
-    </>
+    <div>
+      <p>
+        This is a temporary project used for testing the project display
+        functionality.
+      </p>
+    </div>
   );
 };
 

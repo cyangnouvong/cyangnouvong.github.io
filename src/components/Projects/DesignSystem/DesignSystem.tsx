@@ -1,27 +1,14 @@
-import { useEffect } from "react";
-import type { Project } from "../Projects";
-
-interface DesignSystemProps {
-  projects: Project[];
-  setProjects: (projects: Project[]) => void;
-}
-const DesignSystem = ({ projects, setProjects }: DesignSystemProps) => {
-  useEffect(() => {
-    if (projects.some((p) => p.title === "Design System")) return;
-    setProjects([
-      ...projects,
-      {
-        title: "Design System",
-        description:
-          "A personalized design system for consistent UI development.",
-      },
-    ]);
-  }, [projects, setProjects]);
-
+const DesignSystem = () => {
   return (
-    <>
-      <></>
-    </>
+    <div>
+      <p>
+        This project involves creating a personalized design system that
+        includes a collection of reusable components, styles, and guidelines for
+        consistent UI development. The design system is tailored to the specific
+        needs and preferences of the user, allowing for efficient and cohesive
+        design across various projects and platforms.
+      </p>
+    </div>
   );
 };
 

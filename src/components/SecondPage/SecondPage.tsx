@@ -1,11 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { useWindowSize } from "../../utils/useWindowSize";
 import { Button, DotIndicator, Text } from "@cyangnouvong/dao-ui";
 
 import useInView from "../../utils/useInView";
 import ProjectCards from "../ProjectCards/ProjectCards";
 
-import Projects from "../Projects/Projects";
+import { PROJECTS } from "../Projects/Projects";
 
 import "./styles.css";
 
@@ -47,8 +49,8 @@ interface OverlayProps {
 }
 
 const Overlay = ({ inView, active, setActive, isPortrait }: OverlayProps) => {
-  const projectsArray = Projects();
-  const proj = active != null ? projectsArray[active] : null;
+  const navigate = useNavigate();
+  const proj = active != null ? PROJECTS[active] : null;
 
   return (
     <div className="canvas-overlay">
@@ -77,7 +79,7 @@ const Overlay = ({ inView, active, setActive, isPortrait }: OverlayProps) => {
             >
               {active != null ? String(active + 1).padStart(2, "0") : "—"}
               {" / "}
-              {String(projectsArray.length).padStart(2, "0")}
+              {String(PROJECTS.length).padStart(2, "0")}
             </Text>
           </AnimatedItem>
 
@@ -112,7 +114,12 @@ const Overlay = ({ inView, active, setActive, isPortrait }: OverlayProps) => {
                 height: "clamp(50px, 6vh, 64px)",
               }}
             >
-              <Button variant="emphasis" showArrow={true} size={"sm"}>
+              <Button
+                variant="emphasis"
+                showArrow={true}
+                size={"sm"}
+                onClick={() => navigate(proj?.link || "/")}
+              >
                 View project
               </Button>
             </div>
@@ -120,7 +127,7 @@ const Overlay = ({ inView, active, setActive, isPortrait }: OverlayProps) => {
         </div>
         <div onClick={(e) => e.stopPropagation()}>
           <DotIndicator
-            count={projectsArray.length}
+            count={PROJECTS.length}
             active={active}
             direction={isPortrait ? "horizontal" : "vertical"}
             onChange={(i) => setActive(i)}
@@ -199,7 +206,6 @@ const SecondPage = () => {
   const { isMobile, width, height } = useWindowSize();
   const isPortrait = height > width;
   const [active, setActive] = useState<number | null>(isPortrait ? 0 : 1);
-  const projectsArray = Projects();
 
   const handleSetActive = (next: number | null) => {
     if (isMobile && next === null) return;
@@ -220,29 +226,33 @@ const SecondPage = () => {
     } else {
       setActive((prev) => {
         if (prev === null) return 0;
-        return prev < projectsArray.length - 1 ? prev + 1 : prev;
+        return prev < PROJECTS.length - 1 ? prev + 1 : prev;
       });
     }
   };
 
-  return isMobile ? (
-    <MobilePage
-      pageRef={ref}
-      inView={inView}
-      active={active}
-      setActive={handleSetActive}
-      isPortrait={isPortrait}
-      handleClick={handleMobileClick}
-    />
-  ) : (
-    <div ref={ref}>
-      <DesktopPage
-        inView={inView}
-        active={active}
-        setActive={setActive}
-        isPortrait={isPortrait}
-      />
-    </div>
+  return (
+    <>
+      {isMobile ? (
+        <MobilePage
+          pageRef={ref}
+          inView={inView}
+          active={active}
+          setActive={handleSetActive}
+          isPortrait={isPortrait}
+          handleClick={handleMobileClick}
+        />
+      ) : (
+        <div ref={ref}>
+          <DesktopPage
+            inView={inView}
+            active={active}
+            setActive={setActive}
+            isPortrait={isPortrait}
+          />
+        </div>
+      )}
+    </>
   );
 };
 

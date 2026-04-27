@@ -1,6 +1,11 @@
 import { useState } from "react";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import { useWindowSize } from "./utils/useWindowSize";
 import { Button } from "@cyangnouvong/dao-ui";
+
+import GeneHealth from "./components/Projects/GeneHealth/GeneHealth";
+import DesignSystem from "./components/Projects/DesignSystem/DesignSystem";
+import TempProject from "./components/Projects/TempProject/TempProject";
 
 import useMountAnimation from "./utils/useMountAnimation";
 
@@ -52,9 +57,9 @@ const App = () => {
     );
   };
 
-  return (
-    <div style={{ width: "100%", height: "100%" }}>
-      <div className="border-box" data-scroll-root>
+  const Home = () => {
+    return (
+      <>
         <Scene />
         <div className="ui-layer">
           <LogoReveal onComplete={() => setLogoComplete(true)} />
@@ -62,6 +67,21 @@ const App = () => {
           {seeWorkButton()}
         </div>
         <SecondPage />
+      </>
+    );
+  };
+
+  return (
+    <div style={{ width: "100%", height: "100%" }}>
+      <div className="border-box" data-scroll-root>
+        <HashRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/GeneHealth" element={<GeneHealth />} />
+            <Route path="/DesignSystem" element={<DesignSystem />} />
+            <Route path="/GoldmanSachs" element={<TempProject />} />
+          </Routes>
+        </HashRouter>
       </div>
       <DisplayMode />
     </div>

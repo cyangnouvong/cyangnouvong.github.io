@@ -1,27 +1,15 @@
-import { useEffect } from "react";
-import type { Project } from "../Projects";
-
-interface GeneHealthProps {
-  projects: Project[];
-  setProjects: (projects: Project[]) => void;
-}
-const GeneHealth = ({ projects, setProjects }: GeneHealthProps) => {
-  useEffect(() => {
-    if (projects.some((p) => p.title === "GeneHealth.AI")) return;
-    setProjects([
-      ...projects,
-      {
-        title: "GeneHealth.AI",
-        description:
-          "A platform for genetic testing and personalized health insights.",
-      },
-    ]);
-  }, [projects, setProjects]);
-
+const GeneHealth = () => {
   return (
-    <>
-      <></>
-    </>
+    <div>
+      <p>
+        GeneHealth.AI is a platform that provides genetic testing services and
+        personalized health insights based on users' DNA. The platform offers a
+        range of tests, including ancestry analysis, health risk assessment, and
+        trait analysis. Users can access their results through a user-friendly
+        dashboard that provides actionable insights and recommendations for
+        improving their health and wellness.
+      </p>
+    </div>
   );
 };
 
