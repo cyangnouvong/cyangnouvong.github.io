@@ -15,8 +15,10 @@
     "@cyangnouvong/dao-ui": "github:cyangnouvong/dao-ui",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
+    "framer-motion": "^12.38.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "react-router-dom": "^7.14.1",
     "simplex-noise": "^4.0.3",
     "three": "^0.183.2"
   },

@@ -1,67 +1,117 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { useWindowSize } from "./utils/useWindowSize";
-import { Button } from "@cyangnouvong/dao-ui";
+
+import GeneHealth from "./components/Projects/GeneHealth/GeneHealth";
+import PersonalProjects from "./components/Projects/PersonalProjects/PersonalProjects";
+import GoldmanSachs from "./components/Projects/GoldmanSachs/GoldmanSachs";
+
+import Home from "./components/Home/Home";
 
 import useMountAnimation from "./utils/useMountAnimation";
-
 import DisplayMode from "./components/DisplayMode";
-import IntroHeader from "./components/IntroHeader/IntroHeader";
-import LogoReveal from "./components/LogoReveal/LogoReveal";
-import Scene from "./components/Topography/Scene";
-import SecondPage from "./components/SecondPage/SecondPage";
 
 import "./app.css";
+
+const transition = { duration: 0.35, ease: "easeInOut" } as const;
+const style = {
+  position: "absolute" as const,
+  inset: 0,
+  overflowY: "auto" as const,
+};
+
+const PageWrapper = ({
+  children,
+  skipAnimation,
+  direction,
+}: {
+  children: React.ReactNode;
+  skipAnimation: boolean;
+  direction?: "forward" | "backward";
+}) => (
+  <motion.div
+    initial={
+      skipAnimation ? false : { x: direction === "forward" ? "100%" : "-100%" }
+    }
+    animate={{ x: 0 }}
+    exit={{ x: direction === "forward" ? "-100%" : "100%" }}
+    transition={transition}
+    style={style}
+  >
+    {children}
+  </motion.div>
+);
 
 const App = () => {
   const [, setLogoComplete] = useState(false);
   const { isMobile } = useWindowSize();
   const mounted = useMountAnimation();
+  const location = useLocation();
+  const isFirstRender = useRef(true);
+  const [direction, setDirection] = useState<"forward" | "backward">("forward");
 
-  const handleCTAClick = () => {
-    const target = document.getElementById("second-page");
-    if (!target) return;
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
 
-    const scrollContainer = target.closest<HTMLElement>("[data-scroll-root]");
-    if (!scrollContainer) return;
-
-    scrollContainer.scrollTo({
-      top: target.offsetTop,
-      behavior: "smooth",
-    });
-  };
-
-  const seeWorkButton = () => {
-    return (
-      <div
-        className={"see-work-button " + (isMobile ? "see-work--mobile" : "")}
-        style={{
-          animation: mounted
-            ? `fadeIn ${0.7}s var(--curve) ${1200}ms forwards`
-            : "none",
-        }}
-      >
-        <Button
-          variant="emphasis"
-          showArrow={true}
-          size={"sm"}
-          onClick={handleCTAClick}
-        >
-          See my work
-        </Button>
-      </div>
-    );
-  };
+    setDirection(location.pathname === "/" ? "forward" : "backward");
+  }, [location.pathname]);
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
-      <div className="border-box" data-scroll-root>
-        <Scene />
-        <div className="ui-layer">
-          <LogoReveal onComplete={() => setLogoComplete(true)} />
-          <IntroHeader />
-          {seeWorkButton()}
-        </div>
-        <SecondPage />
+      <div className="border-box">
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route
+              path="/"
+              element={
+                <PageWrapper
+                  skipAnimation={isFirstRender.current}
+                  direction={direction}
+                >
+                  <Home
+                    onLogoComplete={() => setLogoComplete(true)}
+                    isMobile={isMobile}
+                    mounted={mounted}
+                  />
+                </PageWrapper>
+              }
+            />
+            <Route
+              path="/GeneHealth"
+              element={
+                <PageWrapper
+                  skipAnimation={isFirstRender.current}
+                  direction={direction}
+                >
+                  <GeneHealth />
+                </PageWrapper>
+              }
+            />
+            <Route
+              path="/PersonalProjects"
+              element={
+                <PageWrapper
+                  skipAnimation={isFirstRender.current}
+                  direction={direction}
+                >
+                  <PersonalProjects />
+                </PageWrapper>
+              }
+            />
+            <Route
+              path="/GoldmanSachs"
+              element={
+                <PageWrapper skipAnimation={isFirstRender.current}>
+                  <GoldmanSachs />
+                </PageWrapper>
+              }
+            />
+          </Routes>
+        </AnimatePresence>
       </div>
       <DisplayMode />
     </div>

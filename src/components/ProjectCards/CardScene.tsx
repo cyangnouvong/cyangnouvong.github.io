@@ -8,7 +8,7 @@ const DAMP = 0.12;
 
 const CARDS = [
   { color: "#8d80a0" },
-  { color: "#a4af94" },
+  { color: "#858e77" },
   { color: "#c585a6" },
 ];
 

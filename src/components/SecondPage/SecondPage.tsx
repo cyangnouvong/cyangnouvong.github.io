@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+
 import { useWindowSize } from "../../utils/useWindowSize";
 import { Button, DotIndicator, Text } from "@cyangnouvong/dao-ui";
 
 import useInView from "../../utils/useInView";
 import ProjectCards from "../ProjectCards/ProjectCards";
+
+import { PROJECTS } from "../Projects/Projects";
 
 import "./styles.css";
 
@@ -37,12 +41,6 @@ const AnimatedItem = ({
   </div>
 );
 
-const PROJECTS: { title: string; description: string }[] = [
-  { title: "Project one", description: "Description 1" },
-  { title: "Design System", description: "Description 2" },
-  { title: "Project three", description: "Description 3" },
-];
-
 interface OverlayProps {
   inView: boolean;
   active: number | null;
@@ -51,6 +49,7 @@ interface OverlayProps {
 }
 
 const Overlay = ({ inView, active, setActive, isPortrait }: OverlayProps) => {
+  const navigate = useNavigate();
   const proj = active != null ? PROJECTS[active] : null;
 
   return (
@@ -115,7 +114,12 @@ const Overlay = ({ inView, active, setActive, isPortrait }: OverlayProps) => {
                 height: "clamp(50px, 6vh, 64px)",
               }}
             >
-              <Button variant="emphasis" showArrow={true} size={"sm"}>
+              <Button
+                variant="emphasis"
+                showArrow={true}
+                size={"sm"}
+                onClick={() => navigate(proj?.link || "/")}
+              >
                 View project
               </Button>
             </div>
@@ -151,7 +155,7 @@ const MobilePage = ({
   isPortrait,
   handleClick,
 }: MobilePageProps) => (
-  <div ref={pageRef} className="second-page-mobile" id="second-page">
+  <div ref={pageRef} className="second-page-mobile" id="selected-works">
     <div className="canvas-frame" onClick={handleClick}>
       <ProjectCards active={active} setActive={setActive} inView={inView} />
       <Overlay
@@ -177,7 +181,7 @@ const DesktopPage = ({
   setActive,
   isPortrait,
 }: DesktopPageProps) => (
-  <div className="second-page" id="second-page">
+  <div className="second-page" id="selected-works">
     <AnimatedItem
       inView={inView}
       delay={0}
@@ -202,6 +206,17 @@ const SecondPage = () => {
   const { isMobile, width, height } = useWindowSize();
   const isPortrait = height > width;
   const [active, setActive] = useState<number | null>(isPortrait ? 0 : 1);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.scrollTo) {
+      document
+        .getElementById(location.state.scrollTo)
+        ?.scrollIntoView({ behavior: "smooth" });
+      navigate("/", { replace: true, state: null });
+    }
+  }, [location.state]);
 
   const handleSetActive = (next: number | null) => {
     if (isMobile && next === null) return;
@@ -227,24 +242,28 @@ const SecondPage = () => {
     }
   };
 
-  return isMobile ? (
-    <MobilePage
-      pageRef={ref}
-      inView={inView}
-      active={active}
-      setActive={handleSetActive}
-      isPortrait={isPortrait}
-      handleClick={handleMobileClick}
-    />
-  ) : (
-    <div ref={ref}>
-      <DesktopPage
-        inView={inView}
-        active={active}
-        setActive={setActive}
-        isPortrait={isPortrait}
-      />
-    </div>
+  return (
+    <>
+      {isMobile ? (
+        <MobilePage
+          pageRef={ref}
+          inView={inView}
+          active={active}
+          setActive={handleSetActive}
+          isPortrait={isPortrait}
+          handleClick={handleMobileClick}
+        />
+      ) : (
+        <div ref={ref}>
+          <DesktopPage
+            inView={inView}
+            active={active}
+            setActive={setActive}
+            isPortrait={isPortrait}
+          />
+        </div>
+      )}
+    </>
   );
 };
 
