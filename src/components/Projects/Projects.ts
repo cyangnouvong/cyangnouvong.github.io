@@ -12,14 +12,14 @@ export const PROJECTS: Project[] = [
     link: "/GoldmanSachs",
   },
   {
-    title: "GeneHealth.AI",
+    title: "GeneHealth AI",
     description:
       "A platform for genetic testing and personalized health insights.",
     link: "/GeneHealth",
   },
   {
-    title: "Design System",
-    description: "A personalized design system for consistent UI development.",
-    link: "/DesignSystem",
+    title: "Personal Projects",
+    description: "A collection of personal projects.",
+    link: "/PersonalProjects",
   },
 ];

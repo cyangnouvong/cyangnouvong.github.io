@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { useWindowSize } from "../../utils/useWindowSize";
 import { Button, DotIndicator, Text } from "@cyangnouvong/dao-ui";
@@ -155,7 +155,7 @@ const MobilePage = ({
   isPortrait,
   handleClick,
 }: MobilePageProps) => (
-  <div ref={pageRef} className="second-page-mobile" id="second-page">
+  <div ref={pageRef} className="second-page-mobile" id="selected-works">
     <div className="canvas-frame" onClick={handleClick}>
       <ProjectCards active={active} setActive={setActive} inView={inView} />
       <Overlay
@@ -181,7 +181,7 @@ const DesktopPage = ({
   setActive,
   isPortrait,
 }: DesktopPageProps) => (
-  <div className="second-page" id="second-page">
+  <div className="second-page" id="selected-works">
     <AnimatedItem
       inView={inView}
       delay={0}
@@ -206,6 +206,17 @@ const SecondPage = () => {
   const { isMobile, width, height } = useWindowSize();
   const isPortrait = height > width;
   const [active, setActive] = useState<number | null>(isPortrait ? 0 : 1);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.scrollTo) {
+      document
+        .getElementById(location.state.scrollTo)
+        ?.scrollIntoView({ behavior: "smooth" });
+      navigate("/", { replace: true, state: null });
+    }
+  }, [location.state]);
 
   const handleSetActive = (next: number | null) => {
     if (isMobile && next === null) return;

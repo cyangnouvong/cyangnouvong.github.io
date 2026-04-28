@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { Text, Badge, Button } from "@cyangnouvong/dao-ui";
+import { Badge, Button, Text } from "@cyangnouvong/dao-ui";
 
-const GeneHealth = () => {
+const PersonalProjects = () => {
   const navigate = useNavigate();
 
   return (
@@ -13,9 +13,9 @@ const GeneHealth = () => {
     >
       <section style={{ display: "flex", alignItems: "center", gap: "16px" }}>
         <Text font="display" size="xl" style={{ marginRight: "16px" }}>
-          GeneHealth AI
+          Personal Projects
         </Text>
-        <Badge variant="solid">Full Stack</Badge>
+        <Badge variant="solid">Frontend</Badge>
         <Badge variant="subtle">UI Design</Badge>
       </section>
       <div
@@ -28,4 +28,4 @@ const GeneHealth = () => {
   );
 };
 
-export default GeneHealth;
+export default PersonalProjects;
