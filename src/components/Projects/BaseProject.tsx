@@ -17,6 +17,100 @@ interface MetaItem {
   value: string;
 }
 
+interface KeyContributions {
+  label: string;
+  detail: string;
+}
+
+export const BackButton = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div
+      className="back-button"
+      onClick={() => navigate("/", { state: { scrollTo: "selected-works" } })}
+    >
+      <Button size="sm" variant="outline">
+        Back
+      </Button>
+    </div>
+  );
+};
+
+export const ProjectHeader = ({
+  title,
+  badgeTitles,
+}: {
+  title: string;
+  badgeTitles: string[];
+}) => {
+  return (
+    <section>
+      <Text
+        font="display"
+        size="xl"
+        weight="light"
+        style={{ fontStyle: "italic" }}
+      >
+        {title}
+      </Text>
+      <div className="badge-group" style={{ marginTop: "var(--space-3)" }}>
+        {badgeTitles.map((badge, i) => (
+          <Badge key={badge} variant={i % 2 === 0 ? "solid" : "subtle"}>
+            {badge}
+          </Badge>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export const ContributionsList = ({
+  title,
+  keyContributions,
+}: {
+  title: string;
+  keyContributions: KeyContributions[];
+}) => {
+  return (
+    <div className="contributions">
+      <Text
+        size="xs"
+        color="ink-faint"
+        tracking="wider"
+        style={{
+          textTransform: "uppercase",
+          marginBottom: "var(--space-1)",
+        }}
+      >
+        {title}
+      </Text>
+      {keyContributions.map(({ label, detail }) => (
+        <div key={label} className="work-item">
+          <Text
+            size="sm"
+            color="ink-faint"
+            style={{ flexShrink: 0, marginTop: 2 }}
+            className="work-item__dash"
+          >
+            —
+          </Text>
+          <div className="work-item__content">
+            {label !== "" && (
+              <Text size="sm" weight="medium" color="ink">
+                {label}
+              </Text>
+            )}
+            <Text size="sm" color="ink-mid" style={{ lineHeight: 1.7 }}>
+              {detail}
+            </Text>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const TechStackDesktop = ({ techStack }: { techStack: string[] }) => (
   <div className="tech-col">
     <Text
@@ -60,48 +154,6 @@ const TechStackMobile = ({ techStack }: { techStack: string[] }) => (
   </div>
 );
 
-const KeyContributions = ({
-  keyContributions,
-}: {
-  keyContributions: { label: string; detail: string }[];
-}) => {
-  return (
-    <div className="contributions">
-      <Text
-        size="xs"
-        color="ink-faint"
-        tracking="wider"
-        style={{
-          textTransform: "uppercase",
-          marginBottom: "var(--space-1)",
-        }}
-      >
-        Key contributions
-      </Text>
-      {keyContributions.map(({ label, detail }) => (
-        <div key={label} className="work-item">
-          <Text
-            size="sm"
-            color="ink-faint"
-            style={{ flexShrink: 0, marginTop: 2 }}
-            className="work-item__dash"
-          >
-            —
-          </Text>
-          <div className="work-item__content">
-            <Text size="sm" weight="medium" color="ink">
-              {label}
-            </Text>
-            <Text size="sm" color="ink-mid" style={{ lineHeight: 1.7 }}>
-              {detail}
-            </Text>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
-
 const hasLeftCol = (metadata?: MetaItem[], photos?: string[]) => {
   return (metadata && metadata.length > 0) || (photos && photos.length > 0);
 };
@@ -109,18 +161,12 @@ const hasLeftCol = (metadata?: MetaItem[], photos?: string[]) => {
 const LeftCol = ({
   metadata,
   photos,
-  onBack,
 }: {
   metadata?: MetaItem[];
   photos?: string[];
-  onBack: () => void;
 }) => (
   <div className="left-col">
-    <div className="back-button" onClick={onBack}>
-      <Button size="sm" variant="outline">
-        Back
-      </Button>
-    </div>
+    <BackButton />
 
     {metadata && metadata.length > 0 && (
       <div className="meta-block">
@@ -167,11 +213,7 @@ const BaseProject = ({
   metadata,
   photos,
 }: BaseProjectProps) => {
-  const navigate = useNavigate();
   const showLeftCol = hasLeftCol(metadata, photos);
-
-  const handleBack = () =>
-    navigate("/", { state: { scrollTo: "selected-works" } });
 
   return (
     <div className="project-page-container">
@@ -180,39 +222,12 @@ const BaseProject = ({
           !showLeftCol ? "project-layout--no-sidebar" : ""
         }`}
       >
-        {showLeftCol && (
-          <LeftCol metadata={metadata} photos={photos} onBack={handleBack} />
-        )}
+        {showLeftCol && <LeftCol metadata={metadata} photos={photos} />}
 
         <div className="right-col">
-          {!showLeftCol && (
-            <div className="back-button" onClick={handleBack}>
-              <Button size="sm" variant="outline">
-                Back
-              </Button>
-            </div>
-          )}
+          {!showLeftCol && <BackButton />}
 
-          <section>
-            <Text
-              font="display"
-              size="xl"
-              weight="light"
-              style={{ fontStyle: "italic" }}
-            >
-              {title}
-            </Text>
-            <div
-              className="badge-group"
-              style={{ marginTop: "var(--space-3)" }}
-            >
-              {badgeTitles.map((badge, i) => (
-                <Badge key={badge} variant={i % 2 === 0 ? "solid" : "subtle"}>
-                  {badge}
-                </Badge>
-              ))}
-            </div>
-          </section>
+          <ProjectHeader title={title} badgeTitles={badgeTitles} />
 
           <hr className="section-rule" />
 
@@ -223,30 +238,17 @@ const BaseProject = ({
           <hr className="section-rule" />
 
           <div className="lower">
-            <KeyContributions keyContributions={keyContributions} />
+            <ContributionsList
+              title="Key Contributions"
+              keyContributions={keyContributions}
+            />
             <TechStackDesktop techStack={techStack} />
           </div>
         </div>
       </div>
 
       <div className="project-layout-mobile">
-        <section>
-          <Text
-            font="display"
-            size="xl"
-            weight="light"
-            style={{ fontStyle: "italic" }}
-          >
-            {title}
-          </Text>
-          <div className="badge-group" style={{ marginTop: "var(--space-3)" }}>
-            {badgeTitles.map((badge, i) => (
-              <Badge key={badge} variant={i % 2 === 0 ? "solid" : "subtle"}>
-                {badge}
-              </Badge>
-            ))}
-          </div>
-        </section>
+        <ProjectHeader title={title} badgeTitles={badgeTitles} />
 
         <hr className="section-rule" />
 
@@ -260,7 +262,10 @@ const BaseProject = ({
 
         <hr className="section-rule" />
 
-        <KeyContributions keyContributions={keyContributions} />
+        <ContributionsList
+          title={"Key Contributions"}
+          keyContributions={keyContributions}
+        />
 
         {metadata && metadata.length > 0 && (
           <>

@@ -12,7 +12,6 @@ interface HomeProps {
 
 const Home = ({ onLogoComplete, isMobile, mounted }: HomeProps) => {
   const handleCTAClick = () => {
-    console.log("clicked CTA");
     const target = document.getElementById("selected-works");
     if (!target) return;
 
