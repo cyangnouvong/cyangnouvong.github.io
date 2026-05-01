@@ -13,6 +13,7 @@ import useMountAnimation from "./utils/useMountAnimation";
 import DisplayMode from "./components/DisplayMode";
 
 import "./app.css";
+import PixelAnimator from "./components/PixelAnimator/PixelAnimator";
 
 const transition = { duration: 0.35, ease: "easeInOut" } as const;
 const style = {
@@ -61,60 +62,68 @@ const App = () => {
   }, [location.pathname]);
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
-      <div className="border-box">
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            <Route
-              path="/"
-              element={
-                <PageWrapper
-                  skipAnimation={isFirstRender.current}
-                  direction={direction}
-                >
-                  <Home
-                    onLogoComplete={() => setLogoComplete(true)}
-                    isMobile={isMobile}
-                    mounted={mounted}
-                  />
-                </PageWrapper>
-              }
-            />
-            <Route
-              path="/GeneHealth"
-              element={
-                <PageWrapper
-                  skipAnimation={isFirstRender.current}
-                  direction={direction}
-                >
-                  <GeneHealth />
-                </PageWrapper>
-              }
-            />
-            <Route
-              path="/PersonalProjects"
-              element={
-                <PageWrapper
-                  skipAnimation={isFirstRender.current}
-                  direction={direction}
-                >
-                  <PersonalProjects />
-                </PageWrapper>
-              }
-            />
-            <Route
-              path="/GoldmanSachs"
-              element={
-                <PageWrapper skipAnimation={isFirstRender.current}>
-                  <GoldmanSachs />
-                </PageWrapper>
-              }
-            />
-          </Routes>
-        </AnimatePresence>
-      </div>
-      <DisplayMode />
-    </div>
+    <>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/daoPixel" element={<PixelAnimator />} />
+
+          <Route
+            element={
+              <div style={{ width: "100%", height: "100%" }}>
+                <div className="border-box">
+                  <DisplayMode />
+                </div>
+              </div>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <PageWrapper
+                skipAnimation={isFirstRender.current}
+                direction={direction}
+              >
+                <Home
+                  onLogoComplete={() => setLogoComplete(true)}
+                  isMobile={isMobile}
+                  mounted={mounted}
+                />
+              </PageWrapper>
+            }
+          />
+          <Route
+            path="/GeneHealth"
+            element={
+              <PageWrapper
+                skipAnimation={isFirstRender.current}
+                direction={direction}
+              >
+                <GeneHealth />
+              </PageWrapper>
+            }
+          />
+          <Route
+            path="/PersonalProjects"
+            element={
+              <PageWrapper
+                skipAnimation={isFirstRender.current}
+                direction={direction}
+              >
+                <PersonalProjects />
+              </PageWrapper>
+            }
+          />
+          <Route
+            path="/GoldmanSachs"
+            element={
+              <PageWrapper skipAnimation={isFirstRender.current}>
+                <GoldmanSachs />
+              </PageWrapper>
+            }
+          />
+        </Routes>
+      </AnimatePresence>
+    </>
   );
 };
 
