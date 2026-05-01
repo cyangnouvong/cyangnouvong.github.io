@@ -1,6 +1,8 @@
 import { BackButton, ProjectHeader, ContributionsList } from "../BaseProject";
+import { Button } from "@cyangnouvong/dao-ui";
 
 import "../styles.css";
+import { useNavigate } from "react-router-dom";
 
 const designUIContributions = [
   { label: "", detail: "Designed my own mini design system" },
@@ -9,6 +11,7 @@ const designUIContributions = [
 const portfolioContributions = [{ label: "", detail: "Explored Three.js" }];
 
 const PersonalProjects = () => {
+  const navigate = useNavigate();
   return (
     <div className="project-page-container">
       <div className="project-layout project-layout--no-sidebar">
@@ -29,6 +32,11 @@ const PersonalProjects = () => {
               title={"Personal Portfolio"}
               keyContributions={portfolioContributions}
             />
+            <div style={{ height: "30px", width: "200px" }}>
+              <Button size="sm" onClick={() => navigate("/daoPixel")}>
+                Pixel Animator
+              </Button>
+            </div>
           </div>
         </div>
       </div>
