@@ -7,7 +7,6 @@ const PixelAnimator = () => {
         height: "100vh",
         border: "none",
       }}
-      title="Pixel Animator"
     />
   );
 };
