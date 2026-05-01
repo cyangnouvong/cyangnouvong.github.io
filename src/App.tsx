@@ -62,68 +62,61 @@ const App = () => {
   }, [location.pathname]);
 
   return (
-    <>
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route path="/daoPixel" element={<PixelAnimator />} />
-
-          <Route
-            element={
-              <div style={{ width: "100%", height: "100%" }}>
-                <div className="border-box">
-                  <DisplayMode />
-                </div>
-              </div>
-            }
-          />
-          <Route
-            path="/"
-            element={
-              <PageWrapper
-                skipAnimation={isFirstRender.current}
-                direction={direction}
-              >
-                <Home
-                  onLogoComplete={() => setLogoComplete(true)}
-                  isMobile={isMobile}
-                  mounted={mounted}
-                />
-              </PageWrapper>
-            }
-          />
-          <Route
-            path="/GeneHealth"
-            element={
-              <PageWrapper
-                skipAnimation={isFirstRender.current}
-                direction={direction}
-              >
-                <GeneHealth />
-              </PageWrapper>
-            }
-          />
-          <Route
-            path="/PersonalProjects"
-            element={
-              <PageWrapper
-                skipAnimation={isFirstRender.current}
-                direction={direction}
-              >
-                <PersonalProjects />
-              </PageWrapper>
-            }
-          />
-          <Route
-            path="/GoldmanSachs"
-            element={
-              <PageWrapper skipAnimation={isFirstRender.current}>
-                <GoldmanSachs />
-              </PageWrapper>
-            }
-          />
-        </Routes>
-      </AnimatePresence>
-    </>
+    <div style={{ width: "100%", height: "100%" }}>
+      <div className={location.pathname === "/daoPixel" ? "" : "border-box"}>
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route path="/daoPixel" element={<PixelAnimator />} />
+            <Route
+              path="/"
+              element={
+                <PageWrapper
+                  skipAnimation={isFirstRender.current}
+                  direction={direction}
+                >
+                  <Home
+                    onLogoComplete={() => setLogoComplete(true)}
+                    isMobile={isMobile}
+                    mounted={mounted}
+                  />
+                </PageWrapper>
+              }
+            />
+            <Route
+              path="/GeneHealth"
+              element={
+                <PageWrapper
+                  skipAnimation={isFirstRender.current}
+                  direction={direction}
+                >
+                  <GeneHealth />
+                </PageWrapper>
+              }
+            />
+            <Route
+              path="/PersonalProjects"
+              element={
+                <PageWrapper
+                  skipAnimation={isFirstRender.current}
+                  direction={direction}
+                >
+                  <PersonalProjects />
+                </PageWrapper>
+              }
+            />
+            <Route
+              path="/GoldmanSachs"
+              element={
+                <PageWrapper skipAnimation={isFirstRender.current}>
+                  <GoldmanSachs />
+                </PageWrapper>
+              }
+            />
+          </Routes>
+        </AnimatePresence>
+      </div>
+      <DisplayMode />
+    </div>
   );
 };
 

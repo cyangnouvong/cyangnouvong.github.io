@@ -1,5 +1,3 @@
-import "../../app.css";
-
 const PixelAnimator = () => {
   return (
     <iframe
@@ -8,7 +6,6 @@ const PixelAnimator = () => {
         width: "100vw",
         height: "100vh",
         border: "none",
-        display: "block",
       }}
       title="Pixel Animator"
     />
