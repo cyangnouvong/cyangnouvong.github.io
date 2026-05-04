@@ -9,7 +9,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "npm run build && gh-pages -d dist --dotfiles"
+    "build deploy": "npm run build && gh-pages -d dist --dotfiles",
+    "deploy": "npx gh-pages -d dist --dotfiles"
   },
   "dependencies": {
     "@cyangnouvong/dao-ui": "github:cyangnouvong/dao-ui",
