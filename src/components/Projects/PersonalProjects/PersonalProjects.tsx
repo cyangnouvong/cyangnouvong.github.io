@@ -3,6 +3,7 @@ import { Button } from "@cyangnouvong/dao-ui";
 
 import "../styles.css";
 import { useNavigate } from "react-router-dom";
+import { PATHS } from "../../../routes";
 
 const designUIContributions = [
   { label: "", detail: "Designed my own mini design system" },
@@ -33,7 +34,7 @@ const PersonalProjects = () => {
               keyContributions={portfolioContributions}
             />
             <div style={{ height: "30px", width: "200px" }}>
-              <Button size="sm" onClick={() => navigate("/daoPixel")}>
+              <Button size="sm" onClick={() => navigate(PATHS.daoPixel)}>
                 Pixel Animator
               </Button>
             </div>

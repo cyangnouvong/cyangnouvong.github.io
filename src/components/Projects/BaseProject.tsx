@@ -1,6 +1,7 @@
 import { Text, Badge, Button } from "@cyangnouvong/dao-ui";
 import { useNavigate } from "react-router-dom";
 import "./styles.css";
+import { PATHS } from "../../routes";
 
 interface BaseProjectProps {
   title: string;
@@ -28,7 +29,9 @@ export const BackButton = () => {
   return (
     <div
       className="back-button"
-      onClick={() => navigate("/", { state: { scrollTo: "selected-works" } })}
+      onClick={() =>
+        navigate(PATHS.home, { state: { scrollTo: "selected-works" } })
+      }
     >
       <Button size="sm" variant="outline">
         Back

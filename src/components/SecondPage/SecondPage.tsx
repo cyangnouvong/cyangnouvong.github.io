@@ -10,6 +10,7 @@ import ProjectCards from "../ProjectCards/ProjectCards";
 import { PROJECTS } from "../Projects/Projects";
 
 import "./styles.css";
+import { PATHS } from "../../routes";
 
 interface AnimatedItemProps {
   children: React.ReactNode;
@@ -214,7 +215,7 @@ const SecondPage = () => {
       document
         .getElementById(location.state.scrollTo)
         ?.scrollIntoView({ behavior: "smooth" });
-      navigate("/", { replace: true, state: null });
+      navigate(PATHS.home, { replace: true, state: null });
     }
   }, [location.state]);
 
