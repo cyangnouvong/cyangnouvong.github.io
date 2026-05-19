@@ -2,13 +2,372 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pixel-animate</title>
-    <script type="module" crossorigin src="/assets/index-zgybtPIA.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-D64VDMd1.css">
+    <title>daoPixel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="/pixel-animator/assets/index-Rwvp2Hm9.js"></script>
+    <link rel="stylesheet" crossorigin href="/pixel-animator/assets/index-C6vV-FuA.css">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="app">
+      <div id="header">
+        <div id="logo">
+          <span class="logo-dao">dao</span>
+          <span class="logo-pixel">Pixel</span>
+        </div>
+        <div class="header-sep"></div>
+        <button class="btn btn-play" id="play-btn">
+          <svg width="10" height="12" viewBox="0 0 10 12" fill="currentColor">
+            <path d="M0 0L10 6L0 12V0Z" />
+          </svg>
+          Play
+        </button>
+        <div class="header-sep"></div>
+        <button class="btn btn-export-gif" id="export-gif-btn">GIF</button>
+        <button class="btn" id="export-png-btn">PNG</button>
+        <button class="btn" id="export-sheet-btn">Sheet</button>
+        <div id="status"></div>
+        <div
+          style="
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            position: relative;
+          "
+        >
+          <button class="btn-micro" id="theme-btn" title="Toggle dark mode">
+            <svg
+              id="theme-icon-moon"
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="currentColor"
+            >
+              <path d="M10.5 7.5a5 5 0 01-6-6 5 5 0 106 6z" />
+            </svg>
+            <svg
+              id="theme-icon-sun"
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="currentColor"
+              style="display: none"
+            >
+              <circle cx="6" cy="6" r="2.5" />
+              <path
+                d="M6 1v1M6 10v1M1 6h1M10 6h1M2.5 2.5l.7.7M8.8 8.8l.7.7M8.8 3.2l-.7.7M3.2 8.8l-.7.7"
+                stroke="currentColor"
+                stroke-width="1.2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+          <button
+            class="btn-micro"
+            id="shortcuts-btn"
+            title="Keyboard shortcuts"
+          >
+            ?
+          </button>
+          <div id="shortcuts-popover">
+            <div class="shortcuts-title">Shortcuts</div>
+            <div class="shortcuts-grid">
+              <span class="sk">D</span><span>Draw</span>
+              <span class="sk">E</span><span>Erase</span>
+              <span class="sk">F</span><span>Fill</span>
+              <span class="sk">P</span><span>Pick</span>
+              <span class="sk">L</span><span>Line</span>
+              <span class="sk">R</span><span>Rect</span>
+              <span class="sk">Space</span><span>Play / Stop</span>
+              <span class="sk">← →</span><span>Frames</span>
+              <span class="sk">[ ]</span><span>Brush size</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="layout">
+        <div id="left-panel">
+          <!-- Draw -->
+          <button class="tool-btn active" data-tool="draw" title="Draw (D)">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M13 2l3 3-9 9H4v-3L13 2z" />
+            </svg>
+          </button>
+          <!-- Erase -->
+          <button class="tool-btn" data-tool="erase" title="Erase (E)">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 14h12M10.5 3.5l4 4-6 6-4-4 6-6z" />
+              <path d="M6.5 13.5l-3-3" />
+            </svg>
+          </button>
+          <!-- Fill -->
+          <button class="tool-btn" data-tool="fill" title="Flood Fill (F)">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M3 14.5c0-1 .8-1.5 1.5-1.5S6 13.5 6 14.5 5.2 16 4.5 16 3 15.5 3 14.5z"
+                fill="currentColor"
+                stroke="none"
+              />
+              <path d="M9.5 2L15 7.5l-5.5 5.5L4 7.5 9.5 2z" />
+              <path d="M4 7.5h11" />
+            </svg>
+          </button>
+          <!-- Pick -->
+          <button class="tool-btn" data-tool="pick" title="Color Pick (P)">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M13 2l3 3-1.5 1.5-3-3L13 2z" />
+              <path d="M14.5 5L7 12.5l-3 1 1-3L12.5 3.5" />
+              <circle
+                cx="4.5"
+                cy="13.5"
+                r="1.5"
+                fill="currentColor"
+                stroke="none"
+              />
+            </svg>
+          </button>
+          <div class="tool-sep"></div>
+          <!-- Line -->
+          <button class="tool-btn" data-tool="line" title="Line (L)">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            >
+              <line x1="3" y1="15" x2="15" y2="3" />
+            </svg>
+          </button>
+          <!-- Rect -->
+          <button class="tool-btn" data-tool="rect" title="Rectangle (R)">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="12" height="12" />
+            </svg>
+          </button>
+        </div>
+        <div id="center">
+          <div id="canvas-area">
+            <canvas id="draw-canvas"></canvas>
+          </div>
+          <div id="frames-panel">
+            <div id="frames-toolbar">
+              <button class="btn" id="add-btn">+ New</button>
+              <button class="btn" id="copy-btn">Copy</button>
+              <button
+                class="btn icon-btn"
+                id="move-left-btn"
+                title="Move frame left"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M9 2L4 7l5 5" />
+                </svg>
+              </button>
+              <button
+                class="btn icon-btn"
+                id="move-right-btn"
+                title="Move frame right"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 2l5 5-5 5" />
+                </svg>
+              </button>
+              <button class="btn" id="clear-btn">Clear</button>
+              <button class="btn" id="onion-btn">Onion</button>
+            </div>
+            <div id="frames-strip"></div>
+          </div>
+        </div>
+        <div id="right-panel">
+          <div id="rpanel-resize"></div>
+          <div id="rpanel-body">
+            <div id="rpanel-header">
+              <button id="rpanel-collapse-btn" title="Collapse sidebar">
+                <svg
+                  width="8"
+                  height="12"
+                  viewBox="0 0 8 12"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M6 1L1 6l5 5" />
+                </svg>
+              </button>
+            </div>
+            <div id="rpanel-inner">
+              <div class="rpanel-section">
+                <div class="rpanel-label">Preview</div>
+                <canvas id="preview-canvas"></canvas>
+              </div>
+              <div class="rpanel-section">
+                <div class="palette-header">
+                  <div class="rpanel-label">Palette</div>
+                  <button
+                    class="btn-micro"
+                    id="new-palette-btn"
+                    title="New palette"
+                  >
+                    +
+                  </button>
+                  <button
+                    class="btn-micro btn-micro-del"
+                    id="del-palette-btn"
+                    title="Delete palette"
+                  >
+                    ×
+                  </button>
+                </div>
+                <select id="palette-sel"></select>
+                <div id="palette"></div>
+                <div id="add-color-row">
+                  <button class="btn btn-add-color" id="add-color-btn">
+                    + Add color
+                  </button>
+                </div>
+                <div id="cur-color-row">
+                  <div id="cur-color"></div>
+                  <input type="color" id="custom-color" title="Custom color" />
+                </div>
+              </div>
+              <div class="rpanel-section">
+                <div class="rpanel-label">Settings</div>
+                <div class="opt-row">
+                  <label>FPS</label>
+                  <input
+                    type="range"
+                    min="1"
+                    max="24"
+                    value="8"
+                    id="fps-slider"
+                  />
+                  <span id="fps-val">8</span>
+                </div>
+                <div class="opt-row">
+                  <label>Brush</label>
+                  <input
+                    type="range"
+                    min="1"
+                    max="16"
+                    value="1"
+                    id="brush-slider"
+                  />
+                  <span id="brush-val">1</span>
+                </div>
+                <div class="opt-row">
+                  <label>Preset</label>
+                  <select id="grid-sel">
+                    <option value="8x8">8×8</option>
+                    <option value="16x16" selected>16×16</option>
+                    <option value="24x24">24×24</option>
+                    <option value="32x32">32×32</option>
+                    <option value="48x48">48×48</option>
+                    <option value="64x64">64×64</option>
+                    <option value="custom">Custom…</option>
+                  </select>
+                </div>
+                <div id="custom-size-row">
+                  <input
+                    type="number"
+                    id="custom-w"
+                    min="1"
+                    max="1024"
+                    value="64"
+                    placeholder="W"
+                  />
+                  <span class="dim-x">×</span>
+                  <input
+                    type="number"
+                    id="custom-h"
+                    min="1"
+                    max="1024"
+                    value="64"
+                    placeholder="H"
+                  />
+                  <button class="btn" id="custom-apply-btn">Apply</button>
+                </div>
+              </div>
+            </div>
+            <!-- /rpanel-inner -->
+          </div>
+          <!-- /rpanel-body -->
+        </div>
+        <!-- /right-panel -->
+      </div>
+      <!-- /layout -->
+    </div>
+    <!-- /app -->
   </body>
 </html>
