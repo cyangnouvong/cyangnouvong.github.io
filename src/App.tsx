@@ -1,12 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { useWindowSize } from "./utils/useWindowSize";
 import { PATHS, PixelAnimate, routes } from "./routes";
 
 import Home from "./components/Home/Home";
 
-import useMountAnimation from "./utils/useMountAnimation";
 import DisplayMode from "./components/DisplayMode";
 
 import "./app.css";
@@ -41,9 +39,6 @@ const PageWrapper = ({
 );
 
 const App = () => {
-  const [, setLogoComplete] = useState(false);
-  const { isMobile } = useWindowSize();
-  const mounted = useMountAnimation();
   const location = useLocation();
   const isFirstRender = useRef(true);
   const direction = location.pathname === PATHS.home ? "forward" : "backward";
@@ -68,11 +63,7 @@ const App = () => {
                   skipAnimation={isFirstRender.current}
                   direction={direction}
                 >
-                  <Home
-                    onLogoComplete={() => setLogoComplete(true)}
-                    isMobile={isMobile}
-                    mounted={mounted}
-                  />
+                  <Home onLogoComplete={() => {}} />
                 </PageWrapper>
               }
             />

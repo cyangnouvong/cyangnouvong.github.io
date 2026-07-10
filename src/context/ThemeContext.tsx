@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useLayoutEffect } from "react";
 
 type Mode = "Light" | "Dark";
 
@@ -35,45 +35,35 @@ const ThemeContext = createContext<ThemeContextType | null>(null);
 
 function getPreferredMode(): Mode {
   const stored = localStorage.getItem("theme") as Mode | null;
-  console.log("stored:", stored);
-  if (stored) {
-    return stored;
-  }
-
-  const mediaDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  return mediaDark ? "Dark" : "Light";
+  if (stored) return stored;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "Dark"
+    : "Light";
 }
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const preferredMode: Mode = getPreferredMode();
-  const [mode, setMode] = useState<Mode>(preferredMode);
+  const [mode, setMode] = useState<Mode>(getPreferredMode);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     applyTheme(mode);
-  }, []);
+  }, [mode]);
 
   useEffect(() => {
-    if (localStorage.getItem("theme")) {
-      return;
-    }
-
     const media = window.matchMedia("(prefers-color-scheme: dark)");
 
     const listener = (e: MediaQueryListEvent) => {
+      if (localStorage.getItem("theme")) return;
       const newMode: Mode = e.matches ? "Dark" : "Light";
       setMode(newMode);
-      applyTheme(newMode);
     };
 
     media.addEventListener("change", listener);
-
     return () => media.removeEventListener("change", listener);
   }, []);
 
   const handleSetMode = (newMode: Mode) => {
     setMode(newMode);
     localStorage.setItem("theme", newMode);
-    applyTheme(newMode);
   };
 
   return (

@@ -3,14 +3,13 @@ import Scene from "../Topography/Scene";
 import IntroHeader from "../IntroHeader/IntroHeader";
 import LogoReveal from "../LogoReveal/LogoReveal";
 import SecondPage from "../SecondPage/SecondPage";
+import { useWindowSize } from "../../utils/useWindowSize";
+import useMountAnimation from "../../utils/useMountAnimation";
 
-interface HomeProps {
-  onLogoComplete: () => void;
-  isMobile: boolean;
-  mounted: boolean;
-}
+const Home = ({ onLogoComplete }: { onLogoComplete: () => void }) => {
+  const { isMobile } = useWindowSize();
+  const mounted = useMountAnimation();
 
-const Home = ({ onLogoComplete, isMobile, mounted }: HomeProps) => {
   const handleCTAClick = () => {
     const target = document.getElementById("selected-works");
     if (!target) return;
