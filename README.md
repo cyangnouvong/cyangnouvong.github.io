@@ -1,5 +1,5 @@
 # Personal Portfolio
 
-[website](https://wwww.yangnouvong.dev)
+[website](https://yangnouvong.dev/)
 
 three.js learning experience
