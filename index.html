@@ -40,7 +40,30 @@
       name="twitter:description"
       content="Full Stack Developer and Designer specializing in UI/UX, web applications, and end-to-end development."
     />
-    <script type="module" crossorigin src="/assets/index-C7UM_Q2d.js"></script>
+
+    <script>
+      (function () {
+        var key = "phc_tb6sLdQ3xgcrdxaQnrVrkZvaq6V3vXmb4x3G3ZNSRWHP";
+        if (!/^phc_/.test(key)) {
+          return;
+        }
+        var s = document.createElement("script");
+        s.src = "https://us-assets.i.posthog.com/static/array.js";
+        s.async = true;
+        s.crossOrigin = "anonymous";
+        s.onload = function () {
+          window.posthog.init(key, {
+            api_host: "https://us.i.posthog.com",
+            defaults: "2025-05-24",
+            capture_pageview: { path: true, hash: true },
+            disable_capture_url_hashes: false,
+            person_profiles: "identified_only",
+          });
+        };
+        document.head.appendChild(s);
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/index-S5dltxzB.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-B-hw5yei.css">
   </head>
   <body>
