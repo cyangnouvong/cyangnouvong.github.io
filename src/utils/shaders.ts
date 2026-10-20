@@ -1,47 +1,53 @@
-// Shared sweep uniforms — one object, referenced by every contour material.
-// Update sweepUniforms.uSweepX.value each frame to animate the stripe.
-// Three.js reads .value directly and passes it to the GPU. Can't store it as a plain number - updating it wouldn't work because you'd be replacing the reference rather than mutating the object.
-export const sweepUniforms = {
-  uSweepX: { value: -999 }, // current stripe center along the diagonal axis
-  uStripeHalf: { value: 8.0 }, // half-width of the visible stripe (world units)
-};
+// Contour line shaders: each segment is an instanced screen-space quad with a 1px anti-aliasing tent.
 
-// vertex shader - runs once per vertex on the GPU
-// computes gl_Position (where the vertex appears on screen) and passes vDiag to the fragment shader
-// position is a built-in attribute containing the vertex's local position
-// multiply position by modelMatrix to get world position then multiply by viewMatrix and projectionMatrix to get screen space
-// vDiag projects the world position onto the diagonal axis (bottom-left to top-right) which we use to determine the sweep effect in the fragment shader
-// varying means the value is computed per-vertex but then interpolated across the surface and passed to the fragment shader (don't need to compute it per-pixel ourselves)
+// Vertex: expands the unit quad along its segment, offset uHalfWidth pixels across it.
 export const SWEEP_VERT = /* glsl */ `
+  uniform vec2 uResolution;   // drawing-buffer size in device pixels
+  uniform float uHalfWidth;   // half quad width in device pixels
+  attribute vec3 instanceStart;
+  attribute vec3 instanceEnd;
   varying float vDiag;
+  varying float vAcross;
+
   void main() {
-    vec4 worldPos = modelMatrix * vec4(position, 1.0);
-    // Project onto the bottom-left → top-right diagonal axis.
-    // Multiply by 1/√2 to normalize: bottom-left is most negative, top-right most positive.
+    vec3 local = mix(instanceStart, instanceEnd, position.x);
+    vec4 worldPos = modelMatrix * vec4(local, 1.0);
+    // Project onto the bottom-left → top-right diagonal.
     vDiag = (worldPos.x + worldPos.y) * 0.7071067;
-    gl_Position = projectionMatrix * viewMatrix * worldPos;
+    vAcross = position.y;
+
+    mat4 mvp = projectionMatrix * viewMatrix * modelMatrix;
+    vec4 clipStart = mvp * vec4(instanceStart, 1.0);
+    vec4 clipEnd   = mvp * vec4(instanceEnd, 1.0);
+
+    // NDC spans 2 units across the viewport, so px = ndc * resolution / 2.
+    vec2 dirPx = (clipEnd.xy - clipStart.xy) * 0.5 * uResolution;
+    float len = length(dirPx);
+    vec2 dir = len > 0.0 ? dirPx / len : vec2(1.0, 0.0);
+    vec2 normalPx = vec2(-dir.y, dir.x) * uHalfWidth * position.y;
+
+    vec4 clip = mix(clipStart, clipEnd, position.x);
+    clip.xy += normalPx * 2.0 / uResolution;
+    gl_Position = clip;
   }
 `;
 
-// fraggment shader - runs once per pixel and it outputs a color via gl_FragColor
-// uniform means the value is the same for every vertex and pixel in a draw call, set from JavaScript (read-only on the GPU)
-// dist is the distance from the current pixel to the center of the sweep stripe along the diagonal axis
-// t the dist normalized to [0, 1] (0 at the center, 1 at the edge of the stripe)
-// alpha line is the cosine falloff based on t, multiplied by the base opacity for the contour level
-// when t = 0 (center of the stripe), cos(0) = 1 so alpha is at max (uBaseOpacity). When t = 1 (edge of the stripe), cos(pi) = -1 so alpha is 0. In between it creates a smooth fade.
-// discard means this pixel won't be drawn at all
+// Fragment: cosine sweep falloff along the diagonal × the anti-aliasing tent across the quad.
 export const SWEEP_FRAG = /* glsl */ `
   uniform float uSweepX;      // diagonal position of the sweep stripe center
   uniform float uStripeHalf;  // half-width of the stripe in world units
   uniform float uBaseOpacity; // per-level max opacity
   uniform vec3  uColor;       // per-level color
   varying float vDiag;
+  varying float vAcross;
 
   void main() {
     float dist  = abs(vDiag - uSweepX);
     float t     = clamp(dist / uStripeHalf, 0.0, 1.0);
     // Cosine falloff: full opacity at stripe center, smoothly fades to 0 at edges
-    float alpha = uBaseOpacity * 0.5 * (1.0 + cos(t * 3.14159265));
+    float sweep = 0.5 * (1.0 + cos(t * 3.14159265));
+    float coverage = 1.0 - abs(vAcross);
+    float alpha = uBaseOpacity * sweep * coverage;
     if (alpha < 0.005) discard;
     gl_FragColor = vec4(uColor, alpha);
   }
