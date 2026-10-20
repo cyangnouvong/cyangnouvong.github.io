@@ -1,15 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import Scene from "./CardScene";
-import { loadPlaneImages } from "./planeCanvas";
+import { loadPlaneImages } from "./planeSim";
 import { useTheme } from "../../context/ThemeContext";
 
 const TOTAL_CARDS = 3;
 const SWIPE_THRESHOLD = 40; // px
 
-// Cap DPR passed to the Canvas renderer. 3× screens (some Android flagships)
-// render 9× as many fragments for zero visible benefit; 2 is a good ceiling.
-const MAX_DPR: [number, number] = [1, 2];
+// Renderer DPR cap: 1.5× stays sharp on HiDPI without 4K fill cost.
+const MAX_DPR: [number, number] = [1, 1.5];
 
 interface ProjectCardsProps {
   active: number | null;
@@ -64,9 +63,8 @@ const ProjectCards = ({ active, setActive, inView }: ProjectCardsProps) => {
       <Canvas
         orthographic
         camera={{ position: [0, 0, 10], zoom: 100 }}
-        gl={{ antialias: true, stencil: true, premultipliedAlpha: false }}
-        // Tell Three.js to render at the actual device pixel ratio (capped at 2×)
-        // Without this the WebGL backbuffer is 1× and gets upscaled — blurry on HiDPI
+        // No MSAA or stencil: the cards are axis-aligned quads.
+        gl={{ antialias: false, stencil: false }}
         dpr={MAX_DPR}
         style={{ width: "100%", height: "100%" }}
         onPointerMissed={() => setActive(null)}

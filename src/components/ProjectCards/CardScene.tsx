@@ -1,8 +1,9 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { damp3, dampC } from "maath/easing";
 import * as THREE from "three";
-import { createPlaneCanvas } from "./planeCanvas";
+import { createPlaneSim } from "./planeSim";
+import { createPlaneOverlay, createPlaneTextures } from "./planeOverlay";
 
 const DAMP = 0.12;
 
@@ -18,7 +19,7 @@ interface CardProps {
   setActive: (active: number | null) => void;
   color: string;
   totalCards: number;
-  planeImgs: [HTMLImageElement, HTMLImageElement] | null;
+  planeTextures: [THREE.Texture, THREE.Texture] | null;
 }
 
 const Card = ({
@@ -27,12 +28,11 @@ const Card = ({
   setActive,
   color,
   totalCards,
-  planeImgs,
+  planeTextures,
 }: CardProps) => {
   const cardRef = useRef<THREE.Mesh>(null);
-  const planeOverlayRef = useRef<THREE.Mesh>(null);
   const hovered = useRef(false);
-  const { viewport, gl } = useThree();
+  const { viewport, size, gl } = useThree();
 
   const activeIndex = active ?? 0;
   const isActive = active === index;
@@ -44,9 +44,6 @@ const Card = ({
       ? viewport.width / viewport.height
       : viewport.width / totalCards / viewport.height;
   }, [viewport.width, viewport.height, totalCards]);
-
-  // Read DPR from the renderer so the canvas matches the display
-  const dpr = useMemo(() => gl.getPixelRatio(), [gl]);
 
   const fullColor = useMemo(() => new THREE.Color(color), [color]);
   const hoverColor = useMemo(() => {
@@ -62,17 +59,9 @@ const Card = ({
     return new THREE.Color().setHSL(hsl.h, hsl.s * 0.15, hsl.l * 0.35);
   }, [color]);
 
-  const { planeCanvas, textureFront } = useMemo(() => {
-    const pc = createPlaneCanvas(cardAspect, dpr);
-    const tf = new THREE.CanvasTexture(pc.canvasFront);
-    tf.colorSpace = THREE.SRGBColorSpace;
-    // Prevent Three.js from generating mipmaps for a canvas texture —
-    // mipmaps are regenerated every needsUpdate which is very slow on mobile
-    tf.generateMipmaps = false;
-    tf.minFilter = THREE.LinearFilter;
-    tf.magFilter = THREE.LinearFilter;
-    return { planeCanvas: pc, textureFront: tf };
-  }, [cardAspect, dpr]);
+  const planeSim = useMemo(() => createPlaneSim(cardAspect), [cardAspect]);
+  const overlay = useMemo(() => createPlaneOverlay(), []);
+  useEffect(() => () => overlay.dispose(), [overlay]);
 
   const baseOrder = index * 3;
 
@@ -85,18 +74,6 @@ const Card = ({
     [idleColor],
   );
 
-  const frontMaterial = useMemo(
-    () =>
-      new THREE.MeshBasicMaterial({
-        map: textureFront,
-        toneMapped: false,
-        transparent: true,
-      }),
-    [textureFront],
-  );
-
-  const planeImgRef = useRef(planeImgs);
-  planeImgRef.current = planeImgs;
   const wasAnimating = useRef(false);
 
   useFrame((_, delta) => {
@@ -107,7 +84,7 @@ const Card = ({
     const portrait = vh > vw;
 
     let targetX: number;
-    let targetY = 0;
+    const targetY = 0;
     let targetW: number;
     let targetH: number;
 
@@ -140,28 +117,28 @@ const Card = ({
     const pos = cardRef.current.position;
     const curScale = cardRef.current.scale;
 
-    planeOverlayRef.current?.position.set(pos.x, pos.y, 0);
-    planeOverlayRef.current?.scale.set(curScale.x, curScale.y, 1);
-
     const animating = isActive || hovered.current;
-    if (animating && !wasAnimating.current) planeCanvas.reset();
+    if (animating && !wasAnimating.current) planeSim.reset();
     wasAnimating.current = animating;
 
-    planeCanvas.update(animating);
-    const imgs = planeImgRef.current;
+    planeSim.update(animating);
 
-    // draw() returns true only when the canvas actually changed;
-    // skip the GPU texture upload on idle frames to save mobile bandwidth
-    const canvasChanged = planeCanvas.draw(
+    // Backbuffer pixels per world unit, so dot sizes track the on-screen card
+    const pxPerUnit = (size.width / viewport.width) * gl.getPixelRatio();
+    overlay.update(
+      planeSim,
       animating,
-      imgs?.[0] ?? null,
-      imgs?.[1] ?? null,
+      pos.x,
+      pos.y,
+      curScale.x,
+      curScale.y,
+      pxPerUnit,
+      planeTextures,
     );
-    if (canvasChanged) textureFront.needsUpdate = true;
   });
 
   const events = {
-    onClick: (e: any) => {
+    onClick: (e: { stopPropagation: () => void }) => {
       e.stopPropagation();
       const portrait = viewport.height > viewport.width;
       if (portrait) {
@@ -190,14 +167,16 @@ const Card = ({
       >
         <planeGeometry args={[1, 1]} />
       </mesh>
-      <mesh
-        ref={planeOverlayRef}
-        material={frontMaterial}
+      <primitive
+        object={overlay.trail}
         renderOrder={baseOrder + 2}
-        {...events}
-      >
-        <planeGeometry args={[1, 1]} />
-      </mesh>
+        dispose={null}
+      />
+      <primitive
+        object={overlay.sprite}
+        renderOrder={baseOrder + 3}
+        dispose={null}
+      />
     </>
   );
 };
@@ -208,20 +187,34 @@ interface SceneProps {
   planeImgs: [HTMLImageElement, HTMLImageElement] | null;
 }
 
-const Scene = ({ active, setActive, planeImgs }: SceneProps) => (
-  <group>
-    {CARDS.map((card, i) => (
-      <Card
-        key={i}
-        index={i}
-        active={active}
-        setActive={setActive}
-        color={card.color}
-        totalCards={CARDS.length}
-        planeImgs={planeImgs}
-      />
-    ))}
-  </group>
-);
+const Scene = ({ active, setActive, planeImgs }: SceneProps) => {
+  // Two small sprite textures per theme, shared by all cards
+  const planeTextures = useMemo(
+    () => (planeImgs ? createPlaneTextures(planeImgs) : null),
+    [planeImgs],
+  );
+  useEffect(
+    () => () => {
+      planeTextures?.forEach((t) => t.dispose());
+    },
+    [planeTextures],
+  );
+
+  return (
+    <group>
+      {CARDS.map((card, i) => (
+        <Card
+          key={i}
+          index={i}
+          active={active}
+          setActive={setActive}
+          color={card.color}
+          totalCards={CARDS.length}
+          planeTextures={planeTextures}
+        />
+      ))}
+    </group>
+  );
+};
 
 export default Scene;
