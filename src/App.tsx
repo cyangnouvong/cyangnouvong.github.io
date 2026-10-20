@@ -14,6 +14,9 @@ const style = {
   position: "absolute" as const,
   inset: 0,
   overflowY: "auto" as const,
+  // windows scrollbars
+  scrollbarWidth: "thin" as const,
+  scrollbarColor: "var(--ink-faint) transparent",
 };
 
 const PageWrapper = ({

@@ -3,8 +3,7 @@
   inset: 0;
   margin: var(--margin-y) var(--margin-x);
   border: 1px solid var(--ink-muted);
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .ui-layer {
